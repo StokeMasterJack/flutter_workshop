@@ -1,0 +1,4 @@
+#Sat Jan 18 14:40:01 PST 2020
+base.0=/Volumes/repos/r/workshops/flutter/b_flutter_projects/blackjack/build/app/intermediates/transforms/r8/release/0/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
