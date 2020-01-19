@@ -1,0 +1,14 @@
+Data/logic layer
+    Contact
+        fromJson
+        toJson
+
+    Db - static
+        listToJson
+        jsonToList
+
+    Db - instance
+        getAll()
+        getCount()
+
+

@@ -1,0 +1,46 @@
+name: contacts
+description: Flutter Contacts
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  resource: "^2.1.2"
+  ssutil:
+    path: "../ssutil"
+  ssutil_flutter:
+    path: "../ssutil_flutter/"
+  collection: "^1.14.6"
+  path_provider: "^0.4.0"
+  meta: "^1.1.2"
+  quiver: '>=0.28.0'
+  url_launcher: "^3.0.1"
+  permission_handler: '^4.2.0+hotfix.2'
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.0
+
+dev_dependencies:
+  path: "^1.5.1"
+  #  image: "^1.1.31"
+  flutter_test:
+    sdk: flutter
+  test: "^1.6.1"
+
+# For information on the generic Dart part of this file, see the
+# following page: https://www.dartlang.org/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+
+  assets:
+    - data/contacts.json
+    - images/ali_connors.jpg

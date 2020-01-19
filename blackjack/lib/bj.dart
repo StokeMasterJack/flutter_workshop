@@ -302,8 +302,6 @@ abstract class IGame {
 
   String get msg;
 
-  IGame cp();
-
   void dump();
 }
 
