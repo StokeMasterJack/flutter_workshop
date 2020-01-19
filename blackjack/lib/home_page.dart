@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 
-import 'bj_common.dart';
+import 'bj_actions.dart' show Dispatch, NavAction;
 
 class HomePageVu extends StatelessWidget {
   final Dispatch dispatch;

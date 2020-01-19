@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 
 import 'bj.dart';
-import 'bj_common.dart';
+import 'bj_actions.dart' show UI, Dispatch, NavAction, BjAction, UICtx;
 import 'ss_themes.dart';
-import 'ss_util.dart';
+import 'ss_util.dart' show IList, ListPos, ListExtras;
 
 class ButtonsVu extends StatelessWidget {
   final Game g;

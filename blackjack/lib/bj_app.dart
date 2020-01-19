@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card, Action;
 
 import 'bj.dart';
+import 'bj_actions.dart' show Page, Action, NavAction, BjAction;
 import 'bj_app_vu.dart';
-import 'bj_common.dart';
 
 class BjApp extends StatefulWidget {
   final bool shuffle;
@@ -16,12 +16,13 @@ class BjApp extends StatefulWidget {
 }
 
 class BjAppState extends State<BjApp> {
-  Page page = Page.home;
+  Page page;
   Game game;
 
   @override
   void initState() {
     super.initState();
+    page = Page.home;
     this.game = Game.mk(shuffle: widget.shuffle);
   }
 

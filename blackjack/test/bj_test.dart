@@ -27,11 +27,11 @@ void main() {
   });
 
   test('Hand test', () {
-    var h1 = Hand(isDealer: false);
+    var h1 = PlayerHand();
     h1.add(Card(value: 1, suit: 1));
     h1.add(Card(value: 13, suit: 4));
 
-    var h2 = Hand(isDealer: true);
+    var h2 = DealerHand();
     h2.add(Card(value: 1, suit: 1));
     h2.add(Card(value: 2, suit: 1));
     h2.add(Card(value: 3, suit: 1));
@@ -46,10 +46,10 @@ void main() {
   });
 
   test('Deck test', () {
-    var d1 = Deck(shuffle: false);
+    final Deck d1 = Deck.mk(shuffle: false);
     expect(d1.size, 52);
 
-    var c1 = d1.take();
+    final c1 = d1.take();
     expect(c1.name, "A of Spades");
     expect(d1.size, 51);
 
@@ -59,6 +59,7 @@ void main() {
   });
 
   test('Game test', () {
+    print("Starting Game test");
     var g = Game.mk(shuffle: false);
 
     expect(g.deck.size, 48);
@@ -67,9 +68,9 @@ void main() {
     expect(g.ph.points, 1 + 3);
     expect(g.dh.points, 2 + 4);
     expect(g.isGameOver, false);
-//    expect(g.msg, "Press Hit or Stay");
+    expect(g.msg, "Press Hit or Stay");
 
-    g.playerHit();
+    g = g.hitPlayer();
 
     expect(g.deck.size, 47);
     expect(g.ph.size, 3);
@@ -79,7 +80,7 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g.playerHit();
+    g = g.hitPlayer();
     expect(g.deck.size, 46);
     expect(g.ph.size, 4);
     expect(g.dh.size, 2);
@@ -88,7 +89,7 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g.playerStay();
+    g = g.playerStay();
 
     expect(g.deck.size, 44);
     expect(g.ph.size, 4);
@@ -98,7 +99,7 @@ void main() {
     expect(g.isGameOver, true);
     expect(g.msg, "Dealer Wins!");
 
-    g.deal();
+    g = g.deal();
     expect(g.deck.size, 40);
     expect(g.ph.size, 2);
     expect(g.dh.size, 2);
@@ -107,29 +108,31 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g.playerHit();
+    g = g.hitPlayer();
     expect(g.ph.points, 29);
     expect(g.isGameOver, true);
     expect(g.msg, "Dealer Wins!");
 
-    g.deal();
-    g.deal();
-    g.playerHit();
-    g.playerStay();
+    g = g.deal();
+    g = g.deal();
+    g = g.hitPlayer();
+    g = g.playerStay();
 
     expect(g.isGameOver, true);
     expect(g.msg, "Player Wins!");
 
     for (int i = 0; i < 100; i++) {
-      g.deal();
+      g = g.deal();
       while (g.ph.points < 19) {
-        g.playerHit();
+        g = g.hitPlayer();
       }
       if (!g.isGameOver) {
-        g.playerStay();
+        g = g.playerStay();
       }
       expect(g.ph.points > 0, true);
       expect(g.dh.points > 0, true);
     }
+
+    print("Game test complete");
   });
 }

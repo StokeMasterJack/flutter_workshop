@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'bj.dart' show IGame;
-import 'bj_common.dart' show Page, Dispatch, UI, UICtx;
+import 'bj_actions.dart' show Page, Dispatch, UI, UICtx;
 import 'bj_views.dart' show GamePageVu;
 import 'home_page.dart' show HomePageVu;
 import 'ss_themes.dart' show ThemeDataExt;

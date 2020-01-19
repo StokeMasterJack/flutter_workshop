@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'bj_common.dart';
+import 'bj_actions.dart' show BjAction, BjEvent;
 import 'ss_util.dart';
 
 @Immutable()
@@ -86,15 +86,13 @@ abstract class IHand {
 
   IList<Card> get cards;
 
-  bool get canHit;
+  bool get canHit => !isDone;
 
   int get size;
 
   String get name;
 
   int get points;
-
-  bool get isStay;
 
   bool get is21;
 
@@ -108,13 +106,35 @@ abstract class IHand {
   String toString();
 }
 
-class Hand extends IHand {
-  final bool isDealer;
-  final List<Card> _cards = <Card>[];
+T ensure<T>(T v) {
+  if (v == null) {
+    throw ArgumentError("ensure failed");
+  }
+  return v;
+}
 
-  bool _stay = false;
+abstract class Hand extends IHand {
+  final List<Card> _cards;
+  bool _stay;
 
-  Hand({this.isDealer = false});
+  Hand({List<Card> cards, bool stay = false})
+      : this._cards = cards ?? [],
+        this._stay = stay ?? false {
+    ensure(_cards);
+    ensure(_stay);
+  }
+
+  List<Card> cpCards() {
+    return List.from(_cards);
+  }
+
+  Hand mk({List<Card> cards, bool stay});
+
+  Hand cp({List<Card> cards, bool stay}) {
+    return mk(cards: cards ?? cpCards(), stay: stay ?? this._stay);
+  }
+
+  bool get isDealer;
 
   IList<Card> get cards => IList(_cards);
 
@@ -125,46 +145,34 @@ class Hand extends IHand {
   }
 
   @Mutator()
+  void stay() => _stay = true;
+
+  @Mutator()
   void add(Card card) {
-    _cards.add(card);
     if (!canHit) {
-      _stay = true;
+      throw ArgumentError();
+    }
+    this._cards.add(card);
+    if (isDone) {
+      stay();
     }
   }
 
-  @Mutator()
-  void stay() => _stay = true;
+  bool get isDone;
 
-  bool get _canHitPlayer => !_stay && points < 21;
+  bool get canHit => !isDone;
 
-  bool get _canHitDealer => !_stay && points < 17;
+  int get size => _cards.length;
 
-  bool get canHit => isDealer ? _canHitDealer : _canHitPlayer;
+  String get name;
 
-  int get size {
-    return _cards.length;
-  }
-
-  String get name => isDealer ? "Dealer" : "Player";
-
-  int get _points1 => _cards.fold(0, (prev, cur) => prev + cur.points);
-
-  int get _points2 => _cards.total((c) => c.points);
-
-  int get points {
-    final p1 = _points1;
-    final p2 = _points2;
-    assert(p1 == p2);
-    return p1;
-  }
-
-  bool get isStay => _stay;
+  int get points => _cards.total((c) => c.points);
 
   bool get is21 => points == 21;
 
   bool get isBust => points > 21;
 
-  bool get isDone => _stay;
+  bool get isStay => _stay;
 
   @override
   String toString() {
@@ -185,6 +193,36 @@ class Hand extends IHand {
   }
 }
 
+class PlayerHand extends Hand {
+  PlayerHand({List<Card> cards, bool stay}) : super(cards: cards, stay: stay);
+
+  @override
+  PlayerHand mk({List<Card> cards, bool stay}) {
+    return PlayerHand(cards: cards, stay: stay);
+  }
+
+  bool get isDealer => false;
+
+  bool get isDone => isStay || points >= 21;
+
+  String get name => "Player";
+}
+
+class DealerHand extends Hand {
+  DealerHand({List<Card> cards, bool stay}) : super(cards: cards, stay: stay);
+
+  @override
+  DealerHand mk({List<Card> cards, bool stay}) {
+    return DealerHand(cards: cards, stay: stay);
+  }
+
+  bool get isDealer => true;
+
+  bool get isDone => isStay || points >= 17;
+
+  String get name => "Dealer";
+}
+
 abstract class IDeck {
   IList<Card> get cards;
 
@@ -194,20 +232,30 @@ abstract class IDeck {
 }
 
 class Deck extends IDeck {
-  final List<Card> _cards = [];
+  final List<Card> _cards;
   final bool shuffle;
 
-  Deck({bool shuffle = true}) : this.shuffle = shuffle {
-    _populate(shuffle);
-  }
+  Deck._({List<Card> cards, bool shuffle = true})
+      : this._cards = cards ?? [],
+        this.shuffle = shuffle;
+
+  Deck.mk({bool shuffle = true})
+      : this._cards = _populate([], shuffle),
+        this.shuffle = shuffle;
+
+  List<Card> cpCards() => List.from(_cards);
 
   IList<Card> get cards => IList(_cards);
 
   int get size => _cards.length;
 
+  Card take() => _cards.removeAt(0);
+
   @Mutator()
-  Card take() {
-    return _cards.removeAt(0);
+  List<Card> takeCards([int n = 1]) {
+    final List<Card> a = _cards.sublist(0, n);
+    _cards.removeRange(0, n);
+    return a;
   }
 
   void dump() {
@@ -217,46 +265,52 @@ class Deck extends IDeck {
     print("");
   }
 
-  void _populate(bool shuffle) {
-    _cards.clear();
+  static List<Card> _populate(List<Card> a, bool shuffle) {
+    assert(a != null);
     for (int s = 1; s <= 4; s++) {
       for (int v = 1; v <= 13; v++) {
-        _cards.add(Card(value: v, suit: s));
+        a.add(Card(value: v, suit: s));
       }
     }
     if (shuffle) {
-      _cards.shuffle();
+      a.shuffle();
     }
+    return a;
   }
 
   @Mutator()
   void reset() {
-    _populate(this.shuffle);
+    _cards.clear();
+    _populate(_cards, this.shuffle);
+  }
+
+  cp({List<Card> cards, bool shuffle}) {
+    return Deck._(cards: cards ?? cpCards(), shuffle: shuffle ?? this.shuffle);
   }
 }
 
 abstract class IGame {
   static const reshuffleThreshold = 25;
 
-  Deck get deck;
+  IDeck get deck;
 
-  Hand get ph;
+  IHand get ph;
 
-  Hand get dh;
+  IHand get dh;
 
   bool get isGameOver;
 
   String get msg;
 
-  Game cp();
+  IGame cp();
 
   void dump();
 }
 
 class Game extends IGame {
   final Deck deck;
-  final Hand ph;
-  final Hand dh;
+  final PlayerHand ph;
+  final DealerHand dh;
 
   Game._({@required this.deck, @required this.ph, @required this.dh, bool doDeal = false}) {
     if (doDeal) {
@@ -264,7 +318,7 @@ class Game extends IGame {
     }
   }
 
-  Game.mk({bool shuffle = true}) : this._(deck: Deck(shuffle: shuffle), ph: Hand(), dh: Hand(isDealer: true), doDeal: true);
+  Game.mk({bool shuffle = true}) : this._(deck: Deck.mk(shuffle: shuffle), ph: PlayerHand(), dh: DealerHand(), doDeal: true);
 
   bool get isGameOver {
     return ph.isDone && dh.isDone;
@@ -284,62 +338,58 @@ class Game extends IGame {
     }
   }
 
-  Game cp() {
-    return Game._(deck: this.deck, ph: this.ph, dh: this.dh);
-  }
-
-  @Mutator()
-  void dealerHit() => dh.add(deck.take());
-
-  @Mutator()
-  void dealerAutoHit() {
-    while (dh.canHit) {
-      dealerHit();
-    }
-    dh.stay();
+  @Transform()
+  Game cp({Deck deck, Hand ph, Hand dh}) {
+    return Game._(deck: deck ?? this.deck.cp(), ph: ph ?? this.ph.cp(), dh: dh ?? this.dh.cp());
   }
 
   @Transform()
-  Game playerHit() {
+  Game hitPlayer() {
     ph.add(deck.take());
-    if (ph.isBust) {
+    if (ph.isBust || ph.is21) {
       ph.stay();
       dh.stay();
     }
-    return this.cp();
+    return cp();
   }
 
   @Transform()
   Game playerStay() {
     ph.stay();
-    dealerAutoHit();
-    return this.cp();
+    if (ph.is21 || ph.isBust) {
+      dh.stay();
+    }
+    while (!dh.isDone) {
+      dh.add(deck.take());
+    }
+    dh.stay();
+    return cp();
   }
 
   @Transform()
   Game deal() {
+    ph.clear();
+    dh.clear();
     if (deck.size < IGame.reshuffleThreshold) {
       deck.reset();
     }
-    ph.clear();
-    dh.clear();
-    playerHit();
-    dealerHit();
-    playerHit();
-    dealerHit();
-    return this.cp();
+    ph.add(deck.take());
+    dh.add(deck.take());
+    ph.add(deck.take());
+    dh.add(deck.take());
+
+    return cp();
   }
 
   @Transform()
   Game reducer(BjAction a) {
-    Game g = this.cp();
     switch (a.event) {
       case BjEvent.deal:
-        return g.deal();
+        return deal();
       case BjEvent.hit:
-        return g.playerHit();
+        return hitPlayer();
       case BjEvent.stay:
-        return g.playerStay();
+        return playerStay();
       default:
         throw StateError("");
     }
