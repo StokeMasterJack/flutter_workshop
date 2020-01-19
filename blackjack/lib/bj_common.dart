@@ -60,10 +60,10 @@ extension UIExt on UI {
   }
 }
 
-class UIDave extends InheritedWidget {
+class UICtx extends InheritedWidget {
   final UI ui;
 
-  const UIDave({
+  const UICtx({
     Key key,
     @required this.ui,
     @required Widget child,
@@ -71,15 +71,15 @@ class UIDave extends InheritedWidget {
         assert(child != null),
         super(key: key, child: child);
 
-  static UIDave _of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<UIDave>();
+  static UICtx _of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<UICtx>();
   }
 
   static UI of(BuildContext context) {
-    final UIDave uiDave = _of(context);
-    return uiDave.ui;
+    final UICtx uiCtx = _of(context);
+    return uiCtx.ui;
   }
 
   @override
-  bool updateShouldNotify(UIDave old) => ui != old.ui;
+  bool updateShouldNotify(UICtx old) => ui != old.ui;
 }

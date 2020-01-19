@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'bj.dart' show IGame;
-import 'bj_common.dart' show Page, Dispatch, UI, UIDave;
+import 'bj_common.dart' show Page, Dispatch, UI, UICtx;
 import 'bj_views.dart' show GamePageVu;
 import 'home_page.dart' show HomePageVu;
 import 'ss_themes.dart' show ThemeDataExt;
@@ -24,10 +24,10 @@ class BjAppVu extends StatelessWidget {
         return HomePageVu(dispatch: dispatch);
       } else if (p == Page.game1) {
         UI ui = UI.ui1;
-        return UIDave(ui: ui, child: GamePageVu(dispatch: dispatch, game: game));
+        return UICtx(ui: ui, child: GamePageVu(dispatch: dispatch, game: game));
       } else if (p == Page.game2) {
         UI ui = UI.ui2;
-        return UIDave(ui: ui, child: GamePageVu(dispatch: dispatch, game: game));
+        return UICtx(ui: ui, child: GamePageVu(dispatch: dispatch, game: game));
       } else {
         throw StateError("");
       }

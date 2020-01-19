@@ -14,7 +14,7 @@ class ButtonsVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 6.0),
       child: ButtonBar(
@@ -71,7 +71,7 @@ class GameVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     final double hp = ui == UI.ui1 ? 0.0 : 5.0;
     return Padding(
       padding: EdgeInsets.only(top: 20, bottom: 20, left: hp, right: hp),
@@ -89,7 +89,7 @@ class GameMsgVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     final ThemeData themeData = Theme.of(context);
     final double leftPad = ui == UI.ui1 ? 0 : 14;
     final AlignmentGeometry alignment = ui == UI.ui1 ? Alignment.center : Alignment.centerLeft;
@@ -130,7 +130,7 @@ class HandsVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     return ui == UI.ui1 ? build1(context) : build2(context);
   }
 }
@@ -169,7 +169,7 @@ class CardsVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     return ui == UI.ui1 ? _build1(context) : _build2(context);
   }
 }
@@ -195,7 +195,7 @@ class CardVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     return ui == UI.ui1 ? _build1(context) : _build2(context);
   }
 }
@@ -247,7 +247,7 @@ class HandVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UIDave.of(context);
+    final UI ui = UICtx.of(context);
     return ui == UI.ui1 ? build1(context) : build2(context);
   }
 }
