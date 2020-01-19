@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'bj.dart' show IGame;
-import 'bj_common.dart' show Page, Dispatch, UI, UIExt;
+import 'bj_common.dart' show Page, Dispatch, UI, UIDave;
 import 'bj_views.dart' show GamePageVu;
 import 'home_page.dart' show HomePageVu;
 import 'ss_themes.dart' show ThemeDataExt;
@@ -20,18 +20,20 @@ class BjAppVu extends StatelessWidget {
     ThemeData themeData = ThemeDataExt.mkThemeForPlatform(defaultTargetPlatform);
 
     Widget computePageVu(Page p) {
-      if (p == Page.home)
+      if (p == Page.home) {
         return HomePageVu(dispatch: dispatch);
-      else if (p == Page.game1)
-        
-        return GamePageVu(dispatch: dispatch, game: game, ui: UI.ui1);
-      else if (p == Page.game2)
-        return GamePageVu(dispatch: dispatch, game: game, ui: UI.ui2);
-      else
+      } else if (p == Page.game1) {
+        UI ui = UI.ui1;
+        return UIDave(ui: ui, child: GamePageVu(dispatch: dispatch, game: game));
+      } else if (p == Page.game2) {
+        UI ui = UI.ui2;
+        return UIDave(ui: ui, child: GamePageVu(dispatch: dispatch, game: game));
+      } else {
         throw StateError("");
+      }
     }
 
-    final pageVu = computePageVu(page);
+    final Widget pageVu = computePageVu(page);
     return MaterialApp(title: "Blackjack Flutter", theme: themeData, home: pageVu);
   }
 }

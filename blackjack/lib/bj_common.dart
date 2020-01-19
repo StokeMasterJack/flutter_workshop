@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 enum UI { ui1, ui2 }
@@ -57,4 +58,28 @@ extension UIExt on UI {
         throw StateError("");
     }
   }
+}
+
+class UIDave extends InheritedWidget {
+  final UI ui;
+
+  const UIDave({
+    Key key,
+    @required this.ui,
+    @required Widget child,
+  })  : assert(ui != null),
+        assert(child != null),
+        super(key: key, child: child);
+
+  static UIDave _of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<UIDave>();
+  }
+
+  static UI of(BuildContext context) {
+    final UIDave uiDave = _of(context);
+    return uiDave.ui;
+  }
+
+  @override
+  bool updateShouldNotify(UIDave old) => ui != old.ui;
 }

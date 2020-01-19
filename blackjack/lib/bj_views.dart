@@ -3,45 +3,46 @@ import 'package:flutter/material.dart' hide Card;
 
 import 'bj.dart';
 import 'bj_common.dart';
-import 'ss_util.dart';
 import 'ss_themes.dart';
+import 'ss_util.dart';
 
 class ButtonsVu extends StatelessWidget {
   final Game g;
   final Dispatch dispatch;
-  final UI ui;
 
-  ButtonsVu(this.g, this.dispatch, this.ui);
+  ButtonsVu(this.g, this.dispatch);
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(left: 6.0),
-        child: ButtonBar(
-          alignment: ui == UI.ui1 ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: <Widget>[
-            RaisedButton(
-              child: Text("DEAL"),
-              onPressed: g.isGameOver ? () => dispatch(BjAction.deal) : null,
-            ),
-            RaisedButton(
-              child: Text("HIT"),
-              onPressed: g.isGameOver ? null : () => dispatch(BjAction.hit),
-            ),
-            RaisedButton(
-              child: Text("STAY"),
-              onPressed: g.isGameOver ? null : () => dispatch(BjAction.stay),
-            ),
-          ],
-        ),
-      );
+  Widget build(BuildContext context) {
+    final UI ui = UIDave.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: 6.0),
+      child: ButtonBar(
+        alignment: ui == UI.ui1 ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: <Widget>[
+          RaisedButton(
+            child: Text("DEAL"),
+            onPressed: g.isGameOver ? () => dispatch(BjAction.deal) : null,
+          ),
+          RaisedButton(
+            child: Text("HIT"),
+            onPressed: g.isGameOver ? null : () => dispatch(BjAction.hit),
+          ),
+          RaisedButton(
+            child: Text("STAY"),
+            onPressed: g.isGameOver ? null : () => dispatch(BjAction.stay),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class GamePageVu extends StatelessWidget {
   final IGame game;
   final Dispatch dispatch;
-  final UI ui;
 
-  GamePageVu({Key key, @required this.dispatch, @required this.game, @required this.ui})
+  GamePageVu({Key key, @required this.dispatch, @required this.game})
       : assert(game != null),
         assert(dispatch != null),
         super(key: key);
@@ -55,27 +56,27 @@ class GamePageVu extends StatelessWidget {
         ),
         body: SafeArea(
 //            minimum: EdgeInsets.fromLTRB(0.0, 20.0, 20.0, 0.0),
-            child: GameVu(dispatch: dispatch, g: game, ui: ui)));
+            child: GameVu(dispatch: dispatch, g: game)));
   }
 }
 
 class GameVu extends StatelessWidget {
   final IGame g;
   final Dispatch dispatch;
-  final UI ui;
 
-  GameVu({Key key, @required this.dispatch, @required this.g, @required this.ui})
+  GameVu({Key key, @required this.dispatch, @required this.g})
       : assert(g != null),
         assert(dispatch != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final double hp = this.ui == UI.ui1 ? 0.0 : 5.0;
+    final UI ui = UIDave.of(context);
+    final double hp = ui == UI.ui1 ? 0.0 : 5.0;
     return Padding(
       padding: EdgeInsets.only(top: 20, bottom: 20, left: hp, right: hp),
       child: Column(
-        children: <Widget>[ButtonsVu(g, dispatch, ui), HandsVu(ph: g.ph, dh: g.dh, ui: ui), GameMsgVu(g, ui)],
+        children: <Widget>[ButtonsVu(g, dispatch), HandsVu(ph: g.ph, dh: g.dh), GameMsgVu(g)],
       ),
     );
   }
@@ -83,13 +84,13 @@ class GameVu extends StatelessWidget {
 
 class GameMsgVu extends StatelessWidget {
   final IGame g;
-  final UI ui;
 
-  GameMsgVu(this.g, this.ui);
+  GameMsgVu(this.g);
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
+    final UI ui = UIDave.of(context);
+    final ThemeData themeData = Theme.of(context);
     final double leftPad = ui == UI.ui1 ? 0 : 14;
     final AlignmentGeometry alignment = ui == UI.ui1 ? Alignment.center : Alignment.centerLeft;
     return Padding(padding: EdgeInsets.only(top: 30, left: leftPad), child: Align(alignment: alignment, child: Text(g.msg, style: themeData.gameMsg)));
@@ -99,17 +100,16 @@ class GameMsgVu extends StatelessWidget {
 class HandsVu extends StatelessWidget {
   final IHand ph;
   final IHand dh;
-  final UI ui;
 
-  const HandsVu({@required this.ph, @required this.dh, @required this.ui});
+  const HandsVu({@required this.ph, @required this.dh});
 
   Widget build1(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 10, left: 0, right: 0),
       child: IntrinsicHeight(
         child: Row(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Expanded(flex: 1, child: HandVu(hand: ph, ui: ui)),
-          Expanded(flex: 1, child: HandVu(hand: dh, ui: ui)),
+          Expanded(flex: 1, child: HandVu(hand: ph)),
+          Expanded(flex: 1, child: HandVu(hand: dh)),
         ]),
       ),
     );
@@ -121,28 +121,30 @@ class HandsVu extends StatelessWidget {
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 0, right: 0),
       constraints: BoxConstraints.tightForFinite(),
       child: Column(children: [
-        HandVu(hand: ph, ui: ui),
+        HandVu(hand: ph),
         SizedBox(height: 22, width: 3),
-        HandVu(hand: dh, ui: ui),
+        HandVu(hand: dh),
       ]),
     );
   }
 
   @override
-  Widget build(BuildContext context) => ui == UI.ui1 ? build1(context) : build2(context);
+  Widget build(BuildContext context) {
+    final UI ui = UIDave.of(context);
+    return ui == UI.ui1 ? build1(context) : build2(context);
+  }
 }
 
 class CardsVu extends StatelessWidget {
   final IList<Card> cards;
-  final UI ui;
 
-  CardsVu({@required this.cards, @required this.ui});
+  CardsVu({@required this.cards});
 
   Widget _mkCardVu(MapEntry<int, Card> e) {
     final int index = e.key;
     final Card c = e.value;
     final ListPos pos = cards.computeListPos(index);
-    return CardVu(card: c, pos: pos, ui: ui);
+    return CardVu(card: c, pos: pos);
   }
 
   Widget _build1(BuildContext context) {
@@ -166,15 +168,17 @@ class CardsVu extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => ui == UI.ui1 ? _build1(context) : _build2(context);
+  Widget build(BuildContext context) {
+    final UI ui = UIDave.of(context);
+    return ui == UI.ui1 ? _build1(context) : _build2(context);
+  }
 }
 
 class CardVu extends StatelessWidget {
   final Card card;
   final ListPos pos;
-  final UI ui;
 
-  CardVu({@required this.card, @required this.pos, @required this.ui});
+  CardVu({@required this.card, @required this.pos});
 
   Widget _build1(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -190,14 +194,16 @@ class CardVu extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => ui == UI.ui1 ? _build1(context) : _build2(context);
+  Widget build(BuildContext context) {
+    final UI ui = UIDave.of(context);
+    return ui == UI.ui1 ? _build1(context) : _build2(context);
+  }
 }
 
 class HandVu extends StatelessWidget {
   final IHand hand;
-  final UI ui;
 
-  HandVu({@required this.hand, @required this.ui});
+  HandVu({@required this.hand});
 
   Widget build1(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
@@ -214,7 +220,7 @@ class HandVu extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text("${hand.name}", style: themeData.handNameMsg, softWrap: false),
-          CardsVu(cards: hand.cards, ui: ui),
+          CardsVu(cards: hand.cards),
           Text(hand.msg, style: themeData.handPointsMsg, softWrap: false)
         ],
       ),
@@ -226,15 +232,13 @@ class HandVu extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(minWidth: 0.0, maxWidth: double.infinity, minHeight: 0.0, maxHeight: double.infinity),
-//      color: theme.dividerColor.withOpacity(.05),
       padding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 5),
       margin: EdgeInsets.only(top: 0, bottom: 0, left: 0, right: 0),
       child: Column(
-//        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(child: Text("${hand.name}", style: themeData.handNameMsg)),
-          CardsVu(cards: hand.cards, ui: ui),
+          CardsVu(cards: hand.cards),
           Container(child: Text(hand.msg, style: themeData.handPointsMsg))
         ],
       ),
@@ -242,5 +246,8 @@ class HandVu extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => ui == UI.ui1 ? build1(context) : build2(context);
+  Widget build(BuildContext context) {
+    final UI ui = UIDave.of(context);
+    return ui == UI.ui1 ? build1(context) : build2(context);
+  }
 }

@@ -19,7 +19,9 @@ class BjAppState extends State<BjApp> {
   Page page = Page.home;
   Game game;
 
-  BjAppState() {
+  @override
+  void initState() {
+    super.initState();
     this.game = Game.mk(shuffle: widget.shuffle);
   }
 
