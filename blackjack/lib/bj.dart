@@ -1,7 +1,21 @@
+
+import 'ss_util.dart';
 import 'package:meta/meta.dart';
 
-import 'bj_actions.dart' show BjAction, BjEvent;
-import 'ss_util.dart';
+class BJ {
+  static const reshuffleThreshold = 25;
+}
+
+@sealed
+class BjAction {
+  final String type;
+
+  const BjAction(this.type);
+
+  static const BjAction deal = BjAction("deal");
+  static const BjAction hit = BjAction("hit");
+  static const BjAction stay = BjAction("stay");
+}
 
 @Immutable()
 class Card {
@@ -77,16 +91,24 @@ class Card {
     return "$vChar$sChar.gif".toLowerCase();
   }
 
+  int get index => ((suit - 1) * 4) + value;
+
   @override
   String toString() => name;
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is Card && index == other.index;
+
+  @override
+  int get hashCode => index;
 }
 
 abstract class IHand {
+  const IHand();
+
   bool get isDealer;
 
-  IList<Card> get cards;
-
-  bool get canHit => !isDone;
+  List<Card> get cards;
 
   int get size;
 
@@ -98,43 +120,55 @@ abstract class IHand {
 
   bool get isBust;
 
-  bool get isDone;
+  String get msg;
+}
+
+abstract class IDeck {
+  List<Card> get cards;
+
+  bool get shuffle;
+
+  int get size;
+}
+
+abstract class IGame {
+  IDeck get deck;
+
+  IHand get ph;
+
+  IHand get dh;
+
+  bool get isGameOver;
 
   String get msg;
 
-  @override
-  String toString();
+  void dump();
 }
 
-T ensure<T>(T v) {
-  if (v == null) {
-    throw ArgumentError("ensure failed");
-  }
-  return v;
-}
-
-abstract class Hand extends IHand {
+class Hand extends IHand {
+  final bool isDealer;
   final List<Card> _cards;
   bool _stay;
 
-  Hand({List<Card> cards, bool stay = false})
+  Hand._({List<Card> cards, bool stay, bool isDealer})
       : this._cards = cards ?? [],
-        this._stay = stay ?? false {
+        this._stay = stay ?? false,
+        this.isDealer = isDealer ?? false {
     ensure(_cards);
     ensure(_stay);
   }
+
+  factory Hand({bool isDealer = false}) => Hand._(isDealer: isDealer);
 
   List<Card> cpCards() {
     return List.from(_cards);
   }
 
-  Hand mk({List<Card> cards, bool stay});
-
   Hand cp({List<Card> cards, bool stay}) {
-    return mk(cards: cards ?? cpCards(), stay: stay ?? this._stay);
+    return Hand._(cards: cards ?? cpCards(), stay: stay ?? this._stay);
   }
 
-  bool get isDealer;
+  String get name => isDealer ? "Dealer" : "Player";
 
   IList<Card> get cards => IList(_cards);
 
@@ -147,24 +181,21 @@ abstract class Hand extends IHand {
   @Mutator()
   void stay() => _stay = true;
 
+  bool get canHit {
+    if (isStay) return false;
+    final int pMax = isDealer ? 17 : 21;
+    return points <= pMax;
+  }
+
   @Mutator()
   void add(Card card) {
     if (!canHit) {
       throw ArgumentError();
     }
     this._cards.add(card);
-    if (isDone) {
-      stay();
-    }
   }
 
-  bool get isDone;
-
-  bool get canHit => !isDone;
-
   int get size => _cards.length;
-
-  String get name;
 
   int get points => _cards.total((c) => c.points);
 
@@ -191,44 +222,14 @@ abstract class Hand extends IHand {
     });
     print("$points points");
   }
-}
-
-class PlayerHand extends Hand {
-  PlayerHand({List<Card> cards, bool stay}) : super(cards: cards, stay: stay);
 
   @override
-  PlayerHand mk({List<Card> cards, bool stay}) {
-    return PlayerHand(cards: cards, stay: stay);
-  }
-
-  bool get isDealer => false;
-
-  bool get isDone => isStay || points >= 21;
-
-  String get name => "Player";
-}
-
-class DealerHand extends Hand {
-  DealerHand({List<Card> cards, bool stay}) : super(cards: cards, stay: stay);
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Hand && runtimeType == other.runtimeType && isDealer == other.isDealer && _cards == other._cards && _stay == other._stay;
 
   @override
-  DealerHand mk({List<Card> cards, bool stay}) {
-    return DealerHand(cards: cards, stay: stay);
-  }
-
-  bool get isDealer => true;
-
-  bool get isDone => isStay || points >= 17;
-
-  String get name => "Dealer";
-}
-
-abstract class IDeck {
-  IList<Card> get cards;
-
-  bool get shuffle;
-
-  int get size;
+  int get hashCode => isDealer.hashCode ^ _cards.hashCode ^ _stay.hashCode;
 }
 
 class Deck extends IDeck {
@@ -239,9 +240,11 @@ class Deck extends IDeck {
       : this._cards = cards ?? [],
         this.shuffle = shuffle;
 
-  Deck.mk({bool shuffle = true})
-      : this._cards = _populate([], shuffle),
-        this.shuffle = shuffle;
+  factory Deck({bool shuffle = true}) {
+    final a = <Card>[];
+    final ff = _populate(a, shuffle);
+    return Deck._(cards: ff, shuffle: shuffle);
+  }
 
   List<Card> cpCards() => List.from(_cards);
 
@@ -265,6 +268,13 @@ class Deck extends IDeck {
     print("");
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Deck && runtimeType == other.runtimeType && _cards == other._cards && shuffle == other.shuffle;
+
+  @override
+  int get hashCode => _cards.hashCode ^ shuffle.hashCode;
+
   static List<Card> _populate(List<Card> a, bool shuffle) {
     assert(a != null);
     for (int s = 1; s <= 4; s++) {
@@ -287,40 +297,110 @@ class Deck extends IDeck {
   cp({List<Card> cards, bool shuffle}) {
     return Deck._(cards: cards ?? cpCards(), shuffle: shuffle ?? this.shuffle);
   }
+
+
 }
 
-abstract class IGame {
-  static const reshuffleThreshold = 25;
+//todo - inomplete
+//class Deck2 extends IDeck {
+//  final IList<Card> _cards;
+//  final bool shuffle;
+//  final int index;
+//
+//  Deck2._({IList<Card> cards, int index, bool shuffle = true})
+//      : this._cards = ensure(cards),
+//        this.index = ensure(index),
+//        this.shuffle = shuffle;
+//
+//  factory Deck2({bool shuffle = true}) {
+//    final a = <Card>[];
+//    final IList ff = mkCards(shuffle);
+//    return Deck2._(cards: ff, index: 0, shuffle: shuffle);
+//  }
+//
+//  IList<Card> get cards => _cards;
+//
+//  int get size => _cards.length;
+//
+//  Card take() => _cards.removeAt(0);
+//
+//  @Mutator()
+//  List<Card> takeCards([int n = 1]) {
+//    final List<Card> a = _cards.sublist(0, n);
+//    _cards.removeRange(0, n);
+//    return a;
+//  }
+//
+//  void dump() {
+//    _cards.forEach((c) {
+//      print(c.name);
+//    });
+//    print("");
+//  }
+//
+//  @override
+//  bool operator ==(Object other) =>
+//      identical(this, other) || other is Deck && runtimeType == other.runtimeType && _cards == other._cards && shuffle == other.shuffle;
+//
+//  @override
+//  int get hashCode => _cards.hashCode ^ shuffle.hashCode;
+//
+//  static IList<Card> mkCards(bool shuffle) {
+//    final a = <Card>[];
+//    for (int s = 1; s <= 4; s++) {
+//      for (int v = 1; v <= 13; v++) {
+//        a.add(Card(value: v, suit: s));
+//      }
+//    }
+//
+//    int hash;
+//    if (shuffle) {
+//      a.shuffle();
+//      hash = hashCodeList(a);
+//    } else {
+//      hash = 99999;
+//    }
+//    return IList(a);
+//  }
 
-  IDeck get deck;
+//@Mutator()
+//IDeck reset() {
+//  return Deck2(shuffle: this.shuffle);
+//}
+//
+//IDeck cp({IList<Card> cards, int index, bool shuffle}) {
+//  return Deck2._(cards: cards ?? cpCards(), index: index ?? this.index, shuffle: shuffle ?? this.shuffle);
+//}}
+//
+//
+//}
 
-  IHand get ph;
 
-  IHand get dh;
-
-  bool get isGameOver;
-
-  String get msg;
-
-  void dump();
-}
 
 class Game extends IGame {
-  final Deck deck;
-  final PlayerHand ph;
-  final DealerHand dh;
+  final Deck _deck;
+  final Hand ph;
+  final Hand dh;
 
-  Game._({@required this.deck, @required this.ph, @required this.dh, bool doDeal = false}) {
+  Game._({@required Deck deck, @required this.ph, @required this.dh, bool doDeal = false}) : _deck = deck {
     if (doDeal) {
       deal();
     }
   }
 
-  Game.mk({bool shuffle = true}) : this._(deck: Deck.mk(shuffle: shuffle), ph: PlayerHand(), dh: DealerHand(), doDeal: true);
+  factory Game({bool shuffle = true, bool deal = true}) {
+    final deck = Deck(shuffle: shuffle);
+    final ph = Hand(isDealer: false);
+    final dh = Hand(isDealer: true);
+    Game g = Game._(deck: deck, ph: ph, dh: dh);
+    return deal ? g.deal() : g;
+  }
 
   bool get isGameOver {
-    return ph.isDone && dh.isDone;
+    return ph.isStay && dh.isStay;
   }
+
+  IDeck get deck => _deck;
 
   String get msg {
     if (!isGameOver) {
@@ -338,12 +418,12 @@ class Game extends IGame {
 
   @Transform()
   Game cp({Deck deck, Hand ph, Hand dh}) {
-    return Game._(deck: deck ?? this.deck.cp(), ph: ph ?? this.ph.cp(), dh: dh ?? this.dh.cp());
+    return Game._(deck: deck ?? this._deck.cp(), ph: ph ?? this.ph.cp(), dh: dh ?? this.dh.cp());
   }
 
   @Transform()
   Game hitPlayer() {
-    ph.add(deck.take());
+    ph.add(_deck.take());
     if (ph.isBust || ph.is21) {
       ph.stay();
       dh.stay();
@@ -351,14 +431,22 @@ class Game extends IGame {
     return cp();
   }
 
+  /*
+
+    if (ph2.is21 || ph2.isBust) {
+      return cp(g, ph: ph2.stay(), dh: dh2.stay());
+    }
+   */
   @Transform()
   Game playerStay() {
     ph.stay();
     if (ph.is21 || ph.isBust) {
       dh.stay();
+      return cp();
     }
-    while (!dh.isDone) {
-      dh.add(deck.take());
+
+    while (dh.points <= 17) {
+      dh.add(_deck.take());
     }
     dh.stay();
     return cp();
@@ -368,26 +456,26 @@ class Game extends IGame {
   Game deal() {
     ph.clear();
     dh.clear();
-    if (deck.size < IGame.reshuffleThreshold) {
-      deck.reset();
+    if (_deck.size < BJ.reshuffleThreshold) {
+      _deck.reset();
     }
-    ph.add(deck.take());
-    dh.add(deck.take());
-    ph.add(deck.take());
-    dh.add(deck.take());
+    ph.add(_deck.take());
+    dh.add(_deck.take());
+    ph.add(_deck.take());
+    dh.add(_deck.take());
 
     return cp();
   }
 
   @Transform()
-  Game reducer(BjAction a) {
-    switch (a.event) {
-      case BjEvent.deal:
-        return deal();
-      case BjEvent.hit:
-        return hitPlayer();
-      case BjEvent.stay:
-        return playerStay();
+  static Game reducer(Game g, BjAction a) {
+    switch (a) {
+      case BjAction.deal:
+        return g.deal();
+      case BjAction.hit:
+        return g.hitPlayer();
+      case BjAction.stay:
+        return g.playerStay();
       default:
         throw StateError("");
     }

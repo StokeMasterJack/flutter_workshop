@@ -1,0 +1,70 @@
+flutter pub
+
+const v final
+    compile time const
+
+final f = [];
+
+2 types of layout container
+    single child
+        Center
+        Padding
+    multi-child
+        Row
+        Column
+
+
+
+Model
+    Game
+        Deck
+            List<Card>
+        Hand
+            List<Card>
+        Hand
+            List<Card>
+
+3 ways to pass down tree
+    BjApp(Game) ~ controller  //STATEFULL
+        BjAppVu(IGame)
+            GameVu(IGame) - Column
+                ButtonsVu(IGame g,BjDispatch d) - Row
+                    g.isGameOver
+                    d(BjEvent.hit)
+                HandsVu(List<IHand>) - Row
+                    HandVu(IHand) - Column
+                        HandTitleVu(String)
+                        CardsVu(List<ICard>) - Column
+                        HandPointsMsgVu(String)
+                    HandVu(IHand)
+                GameMsgVu(String);
+
+In Flutter
+    never update the UI
+    unidirectional date flow
+
+
+
+extension methods
+
+Widget
+Element
+
+V = F(state + props)
+
+Widget
+    Stateless -
+    Stateful - (mutable state)
+    Inherited
+
+
+Row
+Text
+Theme(
+
+
+)
+
+
+
+

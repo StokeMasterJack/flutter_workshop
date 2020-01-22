@@ -1,36 +1,37 @@
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 
 import 'bj.dart';
-import 'bj_actions.dart' show UI, Dispatch, NavAction, BjAction, UICtx;
+import 'bj_action.dart';
+import 'bj_ui_common.dart';
 import 'ss_themes.dart';
+import 'ss_util.dart';
 import 'ss_util.dart' show IList, ListPos, ListExtras;
 
 class ButtonsVu extends StatelessWidget {
-  final Game g;
-  final Dispatch dispatch;
+  final IGame g;
 
-  ButtonsVu(this.g, this.dispatch);
+  ButtonsVu(this.g);
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
+    final a = AppCtx.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 6.0),
       child: ButtonBar(
-        alignment: ui == UI.ui1 ? MainAxisAlignment.center : MainAxisAlignment.start,
+        alignment: a.page == Page.ui1 ? MainAxisAlignment.center : MainAxisAlignment.start,
         children: <Widget>[
           RaisedButton(
             child: Text("DEAL"),
-            onPressed: g.isGameOver ? () => dispatch(BjAction.deal) : null,
+            onPressed: g.isGameOver ? () => a.dispatch(BjAction.deal) : null,
           ),
           RaisedButton(
-            child: Text("HIT"),
-            onPressed: g.isGameOver ? null : () => dispatch(BjAction.hit),
+            child: Text("HIT QQQQ"),
+            onPressed: g.isGameOver ? null : () => a.dispatch(BjAction.hit),
           ),
           RaisedButton(
             child: Text("STAY"),
-            onPressed: g.isGameOver ? null : () => dispatch(BjAction.stay),
+            onPressed: g.isGameOver ? null : () => a.dispatch(BjAction.stay),
           ),
         ],
       ),
@@ -40,43 +41,41 @@ class ButtonsVu extends StatelessWidget {
 
 class GamePageVu extends StatelessWidget {
   final IGame game;
-  final Dispatch dispatch;
 
-  GamePageVu({Key key, @required this.dispatch, @required this.game})
+  GamePageVu({Key key, @required this.game})
       : assert(game != null),
-        assert(dispatch != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final a = AppCtx.of(context);
+    final Page page = a.page;
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.home), tooltip: 'Home', onPressed: () => dispatch(NavAction.home)),
-          title: Text("Blackjack - ${NavAction.home.title}"),
+          leading: IconButton(icon: Icon(Icons.home), tooltip: 'Home', onPressed: () => a.dispatch(Page.home)),
+          title: Text(page.title),
         ),
         body: SafeArea(
 //            minimum: EdgeInsets.fromLTRB(0.0, 20.0, 20.0, 0.0),
-            child: GameVu(dispatch: dispatch, g: game)));
+            child: GameVu(g: game)));
   }
 }
 
 class GameVu extends StatelessWidget {
   final IGame g;
-  final Dispatch dispatch;
 
-  GameVu({Key key, @required this.dispatch, @required this.g})
+  GameVu({Key key, @required this.g})
       : assert(g != null),
-        assert(dispatch != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
-    final double hp = ui == UI.ui1 ? 0.0 : 5.0;
+    final a = AppCtx.of(context);
+    final double hp = a.page == Page.ui1 ? 0.0 : 5.0;
     return Padding(
       padding: EdgeInsets.only(top: 20, bottom: 20, left: hp, right: hp),
       child: Column(
-        children: <Widget>[ButtonsVu(g, dispatch), HandsVu(ph: g.ph, dh: g.dh), GameMsgVu(g)],
+        children: <Widget>[ButtonsVu(g), HandsVu(ph: g.ph, dh: g.dh), GameMsgVu(g)],
       ),
     );
   }
@@ -89,10 +88,10 @@ class GameMsgVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
+    final a = AppCtx.of(context);
     final ThemeData themeData = Theme.of(context);
-    final double leftPad = ui == UI.ui1 ? 0 : 14;
-    final AlignmentGeometry alignment = ui == UI.ui1 ? Alignment.center : Alignment.centerLeft;
+    final double leftPad = a.page == Page.ui1 ? 0 : 14;
+    final AlignmentGeometry alignment = a.page == Page.ui1 ? Alignment.center : Alignment.centerLeft;
     return Padding(padding: EdgeInsets.only(top: 30, left: leftPad), child: Align(alignment: alignment, child: Text(g.msg, style: themeData.gameMsg)));
   }
 }
@@ -130,8 +129,8 @@ class HandsVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
-    return ui == UI.ui1 ? build1(context) : build2(context);
+    final a = AppCtx.of(context);
+    return a.page == Page.ui1 ? build1(context) : build2(context);
   }
 }
 
@@ -169,8 +168,8 @@ class CardsVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
-    return ui == UI.ui1 ? _build1(context) : _build2(context);
+    final a = AppCtx.of(context);
+    return a.page == Page.ui1 ? _build1(context) : _build2(context);
   }
 }
 
@@ -195,8 +194,8 @@ class CardVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
-    return ui == UI.ui1 ? _build1(context) : _build2(context);
+    final a = AppCtx.of(context);
+    return a.page == Page.ui1 ? _build1(context) : _build2(context);
   }
 }
 
@@ -228,8 +227,8 @@ class HandVu extends StatelessWidget {
   }
 
   Widget build2(BuildContext context) {
+    print("HandVu.build2 ${hand.msg}");
     final ThemeData themeData = Theme.of(context);
-
     return Container(
       constraints: BoxConstraints(minWidth: 0.0, maxWidth: double.infinity, minHeight: 0.0, maxHeight: double.infinity),
       padding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 5),
@@ -247,7 +246,7 @@ class HandVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UI ui = UICtx.of(context);
-    return ui == UI.ui1 ? build1(context) : build2(context);
+    final a = AppCtx.of(context);
+    return a.page == Page.ui1 ? build1(context) : build2(context);
   }
 }

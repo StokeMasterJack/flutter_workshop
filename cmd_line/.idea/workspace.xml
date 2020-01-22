@@ -1,24 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="29a751a2-8d2a-496d-8f2b-c48a625a49db" name="Default Changelist" comment="" />
+    <list default="true" id="29a751a2-8d2a-496d-8f2b-c48a625a49db" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../blackjack/lib/bj_immutable.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blackjack/lib/bj_mutable.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blackjack/test_dart/bj_immutable_test.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blackjack/test_dart/bj_test.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../contacts/data/tmp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../dartExamplets/bin/mixins/a_mixins.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../dartExamplets/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/lib/bj.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/lib/bj.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/lib/bj_app.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/lib/bj_app.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/lib/bj_views.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/lib/bj_views.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/lib/ss_util.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/lib/ss_util.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/test/bj_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/test_dart/bj_mutable_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blackjack/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../blackjack/test_flutter/widget_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/show_samples/show_samples.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/show_samples/show_samples.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1WaeSsONHPAaZxSHwv6SgPGM2z9" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2889151" />
     <property name="settings.editor.selected.configurable" value="editing.templates" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -61,5 +87,9 @@
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state width="1388" height="207" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1579428596062" />
+    <state x="0" y="23" width="1229" height="877" key="SettingsEditor" timestamp="1579585759885">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="0" y="23" width="1229" height="877" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1579585759885" />
   </component>
 </project>

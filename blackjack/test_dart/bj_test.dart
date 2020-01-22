@@ -27,11 +27,11 @@ void main() {
   });
 
   test('Hand test', () {
-    var h1 = PlayerHand();
+    var h1 = Hand();
     h1.add(Card(value: 1, suit: 1));
     h1.add(Card(value: 13, suit: 4));
 
-    var h2 = DealerHand();
+    var h2 = Hand(isDealer: true);
     h2.add(Card(value: 1, suit: 1));
     h2.add(Card(value: 2, suit: 1));
     h2.add(Card(value: 3, suit: 1));
@@ -46,7 +46,7 @@ void main() {
   });
 
   test('Deck test', () {
-    final Deck d1 = Deck.mk(shuffle: false);
+    final Deck d1 = Deck(shuffle: false);
     expect(d1.size, 52);
 
     final c1 = d1.take();
@@ -60,7 +60,7 @@ void main() {
 
   test('Game test', () {
     print("Starting Game test");
-    var g = Game.mk(shuffle: false);
+    var g = Game(shuffle: false);
 
     expect(g.deck.size, 48);
     expect(g.ph.size, 2);
@@ -133,6 +133,5 @@ void main() {
       expect(g.dh.points > 0, true);
     }
 
-    print("Game test complete");
   });
 }

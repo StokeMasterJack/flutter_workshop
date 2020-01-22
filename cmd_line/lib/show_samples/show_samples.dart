@@ -6,12 +6,12 @@ import 'package:path/path.dart' as p;
 
 void showSamples() {
 
-  String sBinDir = p.dirname(Platform.script.path);
-  Directory rootDir = new Directory(sBinDir).parent;
-  String  sSamplesFile =  p.join(rootDir.path,"lib/show_samples/samples.json");
+  var sBinDir = p.dirname(Platform.script.path);
+  var rootDir = Directory(sBinDir).parent;
+  var sSamplesFile =  p.join(rootDir.path,'lib/show_samples/samples.json');
 
-  File jsonFile = new File(sSamplesFile);
-  String jsonText = jsonFile.readAsStringSync();
+  var jsonFile = File(sSamplesFile);
+  var jsonText = jsonFile.readAsStringSync();
 //  print(jsonText);
 
   final json = jsonDecode(jsonText);

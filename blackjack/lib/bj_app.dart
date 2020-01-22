@@ -1,47 +1,57 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card, Action;
 
 import 'bj.dart';
-import 'bj_actions.dart' show Page, Action, NavAction, BjAction;
+import 'bj_action.dart';
 import 'bj_app_vu.dart';
+import 'bj_ui_common.dart';
 
 class BjApp extends StatefulWidget {
   final bool shuffle;
-  final TargetPlatform targetPlatform;
 
-  BjApp({this.shuffle = true}) : this.targetPlatform = defaultTargetPlatform;
+  BjApp({this.shuffle = true}) {
+    print("BjApp shuffle: $shuffle");
+  }
 
   @override
-  BjAppState createState() => BjAppState();
+  State<BjApp> createState() => BjAppState();
 }
 
 class BjAppState extends State<BjApp> {
-  Page page;
   Game game;
+
+  ACtx aCtx;
 
   @override
   void initState() {
     super.initState();
-    page = Page.home;
-    this.game = Game.mk(shuffle: widget.shuffle);
-  }
+    this.game = Game(shuffle: widget.shuffle);
 
-  void dispatch(Action action) {
-    if (action is NavAction) {
-      setState(() {
-        this.page = action.page;
-      });
-    } else if (action is BjAction) {
-      setState(() {
-        this.game = game.reducer(action);
-      });
-    } else {
-      throw StateError("");
-    }
+    this.aCtx = ACtx((Object action) {
+      print("dispatch called: $action");
+      if (action is Page) {
+        if (this.aCtx.page != action) {
+          setState(() {
+            this.aCtx = this.aCtx.cp(action);
+          });
+        }
+      } else if (action is BjAction) {
+        final g2 = Game.reducer(this.game, action);
+        if (this.game != g2) {
+          setState(() {
+            this.game = g2;
+          });
+        }
+      } else {
+        throw StateError("Bad Action: $action");
+      }
+    }, Page.home);
+
+    print("initState game: (${identityHashCode(game)})  aCtx: $aCtx");
   }
 
   @override
   Widget build(BuildContext context) {
-    return BjAppVu(page, game, dispatch, widget.targetPlatform);
+    print("build game: $game  (${identityHashCode(game)})  aCtx: $aCtx");
+    return AppCtx(aCtx: aCtx, child: BjAppVu(game: game, a: aCtx));
   }
 }
