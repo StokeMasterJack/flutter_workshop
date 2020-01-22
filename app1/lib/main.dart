@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'bj.dart';
+
 void main() => runApp(MyApp());
 
 enum BjAction { deal, hit, stay }
@@ -46,7 +48,6 @@ class ButtonsVu extends StatelessWidget {
 class HandsVu extends StatelessWidget {
   const HandsVu();
 
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -68,15 +69,19 @@ class HandVu extends StatelessWidget {
 }
 
 class GameMsgVu extends StatelessWidget {
-  const GameMsgVu();
+  final String gameMsg;
+
+  const GameMsgVu(this.gameMsg);
 
   @override
   Widget build(BuildContext context) {
-    return Text("GameMsgVu");
+    return Text(gameMsg);
   }
 }
 
 class MyApp extends StatelessWidget {
+  final g = const Game();
+
   const MyApp();
 
   void dispatch(BjAction action) {
@@ -86,30 +91,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.home),
-            tooltip: "Go to Home screen",
-            onPressed: () {
-              print("home pressed");
-            },
+        title: 'Flutter Demo',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.home),
+              tooltip: "Go to Home screen",
+              onPressed: () {
+                print("home pressed");
+              },
+            ),
+            title: const Text("Blackjack"),
           ),
-          title: Text("Blackjack"),
-        ),
-        body: Center(
-            child: Column(
-          children: [ButtonsVu(dispatch), HandsVu(), GameMsgVu()],
-        )),
-      ),
-    );
+          body: Column(children: [ButtonsVu(dispatch), HandsVu(), GameMsgVu(g.msg)]),
+        ));
   }
-
-//  Widget myButton(String text, BjAction action, BjDispatch dispatch) =>
-//      Padding(padding: EdgeInsets.all(10), child: RaisedButton(child: Text(text.toUpperCase()), onPressed: () => dispatch(action)));
-
 }

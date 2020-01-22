@@ -58,12 +58,21 @@ Widget
     Inherited
 
 
-Row
-Text
-Theme(
+layout container: Row, Column,Center,Padding
+Renders something: Text, Button, Icon
+Puts something into the call stack: Theme
 
+
+HTML element: Row(
 
 )
+
+
+HTML start tag: Row(
+
+HTML end tag: )
+
+
 
 
 
