@@ -14,7 +14,7 @@ class HomePageVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Dispatch dispatch = aCtx.dispatch;
+    final BjDispatch dispatch = aCtx.dispatch;
     final Page page = aCtx.page;
     assert(dispatch != null);
     assert(page != null);

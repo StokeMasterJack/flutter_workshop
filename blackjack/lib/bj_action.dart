@@ -1,3 +1,5 @@
+typedef BjDispatch = void Function(Object action);
+
 class Page {
   final String type;
   final String title;

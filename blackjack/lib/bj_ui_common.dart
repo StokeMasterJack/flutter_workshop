@@ -2,35 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'bj_action.dart';
-import 'ss_util.dart';
-
-//class PageCtx extends InheritedWidget {
-//  final Page page;
-//
-//  const PageCtx({
-//    Key key,
-//    @required this.page,
-//    @required Widget child,
-//  })  : assert(page != null),
-//        assert(child != null),
-//        super(key: key, child: child);
-//
-//  static PageCtx _of(BuildContext context) {
-//    return context.dependOnInheritedWidgetOfExactType<PageCtx>();
-//  }
-//
-//  static Page of(BuildContext context) {
-//    final PageCtx ctx = _of(context);
-//    return ctx.page;
-//  }
-//
-//  @override
-//  bool updateShouldNotify(PageCtx old) => page != old.page;
-//}
 
 class ACtx {
   final Page page;
-  final Dispatch dispatch;
+  final BjDispatch dispatch;
 
   const ACtx(this.dispatch, this.page)
       : assert(dispatch != null),
@@ -42,7 +17,7 @@ class ACtx {
   }
 
   @override
-  int get hashCode => page.hashCode ^  dispatch.hashCode;
+  int get hashCode => page.hashCode ^ dispatch.hashCode;
 
   @override
   bool operator ==(other) {

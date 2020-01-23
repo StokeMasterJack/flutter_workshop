@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
+import 'package:crypto/crypto.dart';
+import 'package:meta/meta.dart';
 
 import 'ss_util.dart';
-import 'package:meta/meta.dart';
 
 class BJ {
   static const reshuffleThreshold = 25;
@@ -25,6 +27,8 @@ class Card {
   Card({@required this.value, @required this.suit})
       : assert(value >= 1 && value <= 13),
         assert(suit >= 1 && suit <= 4);
+
+  int get index => (suit - 1) * 13 + (value - 1);
 
   String get suitName {
     switch (suit) {
@@ -91,7 +95,7 @@ class Card {
     return "$vChar$sChar.gif".toLowerCase();
   }
 
-  int get index => ((suit - 1) * 4) + value;
+//  int get index => ((suit - 1) * 4) + value;
 
   @override
   String toString() => name;
@@ -144,6 +148,44 @@ abstract class IGame {
 
   void dump();
 }
+
+//class Cards {
+//  final List<Card> cards;
+//  final bool shuffle;
+//
+//  @override
+//  final int hashCode;
+//
+//  Cards._(this.cards, this.shuffle, this.hashCode);
+//
+//  factory Cards(bool shuffle) {
+//    final a = _mkCards(shuffle);
+//    final hash = shuffle ? hashCodeList(a) : 0;
+//    return Cards._(a, shuffle, hash);
+//  }
+//
+//  static List<Card> _mkCards(bool shuffle) {
+//    final a = List(52);
+//    for (int s = 1; s <= 4; s++) {
+//      for (int v = 1; v <= 13; v++) {
+//        int index = (s - 1) * 13 + (v - 1);
+//        a[index] = Card(value: v, suit: s);
+//        a.add(Card(value: v, suit: s));
+//      }
+//    }
+//    if (shuffle) {
+//      a.shuffle();
+//    }
+//    return List.unmodifiable(a);
+//  }
+//
+////  @override
+////  bool operator ==(Object other) => ListEquality().equals(a, other.)
+//}
+
+//void test1() {
+//  final Hash h = Hash();
+//}
 
 class Hand extends IHand {
   final bool isDealer;
@@ -224,48 +266,42 @@ class Hand extends IHand {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is Hand && runtimeType == other.runtimeType && isDealer == other.isDealer && _cards == other._cards && _stay == other._stay;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is Hand) {
+      return isDealer == other.isDealer && _stay == other._stay && _cards == other._cards;
+      ;
+    } else {
+      return false;
+    }
+
+//    }
+//        other is Hand &&
+//            runtimeType == other.runtimeType && isDealer == other.isDealer && _cards == other._cards && _stay == other._stay;
+  }
 
   @override
   int get hashCode => isDealer.hashCode ^ _cards.hashCode ^ _stay.hashCode;
 }
 
 class Deck extends IDeck {
-  final List<Card> _cards;
+  final List<Card> cards;
+  int index;
   final bool shuffle;
 
-  Deck._({List<Card> cards, bool shuffle = true})
-      : this._cards = cards ?? [],
-        this.shuffle = shuffle;
+  Deck._({@required this.cards, @required this.index, @required this.shuffle});
 
-  factory Deck({bool shuffle = true}) {
-    final a = <Card>[];
-    final ff = _populate(a, shuffle);
-    return Deck._(cards: ff, shuffle: shuffle);
-  }
+  factory Deck({bool shuffle = true}) => Deck._(cards: mkCards(), index: 0, shuffle: shuffle);
 
-  List<Card> cpCards() => List.from(_cards);
-
-  IList<Card> get cards => IList(_cards);
-
-  int get size => _cards.length;
-
-  Card take() => _cards.removeAt(0);
+  int get size => 52 - index;
 
   @Mutator()
-  List<Card> takeCards([int n = 1]) {
-    final List<Card> a = _cards.sublist(0, n);
-    _cards.removeRange(0, n);
-    return a;
-  }
+  Card take() => cards[index++];
 
   void dump() {
-    _cards.forEach((c) {
+    for (Card c in cards) {
       print(c.name);
-    });
-    print("");
+    }
   }
 
   @override
@@ -297,8 +333,6 @@ class Deck extends IDeck {
   cp({List<Card> cards, bool shuffle}) {
     return Deck._(cards: cards ?? cpCards(), shuffle: shuffle ?? this.shuffle);
   }
-
-
 }
 
 //todo - inomplete
@@ -345,17 +379,17 @@ class Deck extends IDeck {
 //  @override
 //  int get hashCode => _cards.hashCode ^ shuffle.hashCode;
 //
-//  static IList<Card> mkCards(bool shuffle) {
-//    final a = <Card>[];
-//    for (int s = 1; s <= 4; s++) {
-//      for (int v = 1; v <= 13; v++) {
-//        a.add(Card(value: v, suit: s));
-//      }
-//    }
+
 //
 //    int hash;
 //    if (shuffle) {
-//      a.shuffle();
+//      a.shuffle();//  static IList<Card> mkCards(bool shuffle) {
+////    final a = <Card>[];
+////    for (int s = 1; s <= 4; s++) {
+////      for (int v = 1; v <= 13; v++) {
+////        a.add(Card(value: v, suit: s));
+////      }
+////    }
 //      hash = hashCodeList(a);
 //    } else {
 //      hash = 99999;
@@ -374,8 +408,6 @@ class Deck extends IDeck {
 //
 //
 //}
-
-
 
 class Game extends IGame {
   final Deck _deck;

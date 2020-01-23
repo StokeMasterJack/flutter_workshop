@@ -3,6 +3,16 @@ import 'package:test/test.dart';
 import '../lib/bj.dart';
 
 void main() {
+//
+//    final a = List(52);
+//    for (int s = 1; s <= 4; s++) {
+//      for (int v = 1; v <= 13; v++) {
+//        int index = (s - 1) * 13 + (v -1);
+//        print("$index  s: $s v: $v");
+////        a.add(Card(value: v, suit: s));
+//      }
+//    }
+
   test('Card test', () {
     var c1 = Card(value: 1, suit: 1);
     var c2 = Card(value: 13, suit: 4);
@@ -132,6 +142,5 @@ void main() {
       expect(g.ph.points > 0, true);
       expect(g.dh.points > 0, true);
     }
-
   });
 }

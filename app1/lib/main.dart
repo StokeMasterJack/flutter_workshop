@@ -1,8 +1,41 @@
 import 'package:flutter/material.dart';
 
 import 'bj.dart';
+import 'hands.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(GameController());
+
+class GameController extends StatefulWidget {
+  @override
+  State createState() => GameControllerState();
+}
+
+class GameControllerState extends State<GameController> {
+  Game g;
+
+  @override
+  void initState() {
+    super.initState();
+    g = Game();
+  }
+
+
+  void dispatch(BjAction action) {
+    final Game g2 = Game.reduce(g, action);
+
+    setState(() {
+      g = g2;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GameVu(g, dispatch);
+  }
+}
+
+
+
 
 enum BjAction { deal, hit, stay }
 
@@ -45,29 +78,6 @@ class ButtonsVu extends StatelessWidget {
   }
 }
 
-class HandsVu extends StatelessWidget {
-  const HandsVu();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[HandVu("Player"), HandVu("Dealer")],
-    );
-  }
-}
-
-class HandVu extends StatelessWidget {
-  final String hand;
-
-  const HandVu(this.hand);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(hand);
-  }
-}
-
 class GameMsgVu extends StatelessWidget {
   final String gameMsg;
 
@@ -79,14 +89,11 @@ class GameMsgVu extends StatelessWidget {
   }
 }
 
-class MyApp extends StatelessWidget {
-  final g = const Game();
+class GameVu extends StatelessWidget {
+  final Game g;
+  final BjDispatch dispatch;
 
-  const MyApp();
-
-  void dispatch(BjAction action) {
-    print("dispatch $action");
-  }
+  GameVu(this.g, this.dispatch);
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +111,7 @@ class MyApp extends StatelessWidget {
             ),
             title: const Text("Blackjack"),
           ),
-          body: Column(children: [ButtonsVu(dispatch), HandsVu(), GameMsgVu(g.msg)]),
+          body: Column(children: [ButtonsVu(dispatch), HandsVu(g), GameMsgVu(g.msg)]),
         ));
   }
 }
