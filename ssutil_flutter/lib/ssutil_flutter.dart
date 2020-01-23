@@ -131,9 +131,14 @@ class FutBuilder<T> extends StatelessWidget {
         this.errBuilder = errBuilder != null ? errBuilder : Defaults.errBuilder,
         this.dataBuilder = dataBuilder != null ? dataBuilder : Defaults.dataBuilder;
 
+
+  void test1() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new FutureBuilder<T>(
+    return FutureBuilder<T>(
         future: future,
         builder: (BuildContext context, AsyncSnapshot<T> snap) {
 //          if(snap.hasData) return dataBuilder(context,snap.data);
@@ -141,11 +146,14 @@ class FutBuilder<T> extends StatelessWidget {
             case ConnectionState.none:
               return noneBuilder(context);
             case ConnectionState.waiting:
-              return waitBuilder(context);
+              return CircularProgressIndicator();
+//              return waitBuilder(context);
             case ConnectionState.active:
               return activeBuilder(context);
             case ConnectionState.done:
-              return snap.hasError ? errBuilder(context, snap.error) : dataBuilder(context, snap.data);
+              return snap.hasError ? Text("Err") : ListView(
+                children: <Widget>[Text("p1")],
+              );
             default:
               return Text("Should nver get here");
           }

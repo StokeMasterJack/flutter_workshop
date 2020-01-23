@@ -1,34 +1,28 @@
-import 'dart:collection';
+//int hashCodeList<T>(Iterable<T> a) {
+//  int hash = 1;
+//  Iterator<T> i = a.iterator;
+//  while (true) {
+//    bool dd = i.moveNext();
+//    if (!dd) break;
+//    T el = i.current;
+//    hash = 31 * hash + (el == null ? 0 : el.hashCode);
+//  }
+//  return hash;
+//}
 
-int hashCodeList<T>(Iterable<T> a) {
-  int hash = 1;
-  Iterator<T> i = a.iterator;
-  while (true) {
-    bool dd = i.moveNext();
-    if (!dd) break;
-    T el = i.current;
-    hash = 31 * hash + (el == null ? 0 : el.hashCode);
-  }
-  return hash;
-}
-
-class IList<E> extends UnmodifiableListView<E> {
-  IList(Iterable<E> source) : super(source);
-}
-
-class IList2<E> extends UnmodifiableListView<E> {
-  final int hash;
-
-  IList2(Iterable<E> source, [int hash])
-      : this.hash = hash ?? hashCodeList(source),
-        super(source);
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || other is IList2 && runtimeType == other.runtimeType && hash == other.hash;
-
-  @override
-  int get hashCode => hash;
-}
+//class List2<E> extends UnmodifiableListView<E> {
+//  final int hash;
+//
+//  List2(Iterable<E> source, [int hash])
+//      : this.hash = hash ?? hashCodeList(source),
+//        super(source);
+//
+//  @override
+//  bool operator ==(Object other) => identical(this, other) || other is List2 && runtimeType == other.runtimeType && hash == other.hash;
+//
+//  @override
+//  int get hashCode => hash;
+//}
 
 String indent(int d) {
   final sb = StringBuffer();
@@ -83,5 +77,3 @@ T ensure<T>(T v) {
   }
   return v;
 }
-
-

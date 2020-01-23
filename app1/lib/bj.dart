@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:app1/main.dart';
 import 'package:meta/meta.dart';
 
 class Card {
@@ -49,11 +48,11 @@ class Card {
 }
 
 class Game {
-  final Deck deck = Deck();
+  final Deck deck;
   final Hand ph = Hand(isDealer: false);
   final Hand dh = Hand(isDealer: true);
 
-  Game() {
+  Game({bool shuffle = true}) : deck = Deck(shuffle: shuffle) {
     deal();
   }
 
@@ -71,25 +70,26 @@ class Game {
   }
 
   void stay() {
-    while (dh.points < 17) {
-      dh.add(deck.take());
+    ph.stay();
+    if (ph.points < 21) {
+      while (dh.points < 17) {
+        dh.add(deck.take());
+      }
     }
+    dh.stay();
   }
 
-  static Game reduce(Game g1, BjAction a) {
-    if (a == BjAction.deal) {
-      g1.deal();
-    } else if (a == BjAction.hit) {
-      g1.hit();
-    } else if (a == BjAction.stay) {
-      g1.stay();
-    } else {
-      throw StateError("");
-    }
-    return g1;
+  bool get isGameOver {
+    return ph.points >= 21 || ph.isStay && dh.isStay;
   }
 
-  final String msg = "Press Hit or Stay";
+  String get msg {
+    if (!isGameOver) return "Press Hit or Stay";
+    if (dh.points > 21) return "Player wins!";
+    if (ph.points > 21) return "Dealer wins!";
+    if (ph.points >= dh.points) return "Player wins!";
+    return "Dealer wins!";
+  }
 
   void dump() {
     print("Game");
@@ -100,11 +100,17 @@ class Game {
 }
 
 class Deck {
-  final List<Card> _cards;
+  List<Card> _cards;
+  bool shuffle;
 
-  Deck({bool shuffle = true}) : _cards = _mkCards(shuffle);
+  Deck({this.shuffle = true}) : _cards = _mkCards(shuffle);
 
-  Card take() => _cards.removeAt(0);
+  Card take() {
+    if (_cards.length < 20) {
+      _cards = _mkCards(this.shuffle);
+    }
+    return _cards.removeAt(0);
+  }
 
   static List<Card> _mkCards(bool shuffle) {
     final a = <Card>[];
@@ -122,6 +128,9 @@ class Deck {
 
 class Hand {
   final bool isDealer;
+  bool _stay = false;
+
+  bool get isStay => _stay;
 
   final List<Card> _cards = <Card>[];
 
@@ -130,8 +139,6 @@ class Hand {
   void add(Card card) => _cards.add(card);
 
   List<Card> get cards => List.unmodifiable(_cards);
-
-//  List<Card> get cards => _cards;
 
   int get points => _cards.fold(0, (int v, Card c) => v + c.points);
 
@@ -143,6 +150,10 @@ class Hand {
 
   void clear() {
     _cards.clear();
+  }
+
+  void stay() {
+    this._stay = true;
   }
 
   void dump() {

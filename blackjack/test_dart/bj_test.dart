@@ -3,16 +3,6 @@ import 'package:test/test.dart';
 import '../lib/bj.dart';
 
 void main() {
-//
-//    final a = List(52);
-//    for (int s = 1; s <= 4; s++) {
-//      for (int v = 1; v <= 13; v++) {
-//        int index = (s - 1) * 13 + (v -1);
-//        print("$index  s: $s v: $v");
-////        a.add(Card(value: v, suit: s));
-//      }
-//    }
-
   test('Card test', () {
     var c1 = Card(value: 1, suit: 1);
     var c2 = Card(value: 13, suit: 4);
@@ -37,7 +27,7 @@ void main() {
   });
 
   test('Hand test', () {
-    var h1 = Hand();
+    var h1 = Hand(isDealer: false);
     h1.add(Card(value: 1, suit: 1));
     h1.add(Card(value: 13, suit: 4));
 
@@ -70,7 +60,7 @@ void main() {
 
   test('Game test', () {
     print("Starting Game test");
-    var g = Game(shuffle: false);
+    final g = Game(shuffle: false);
 
     expect(g.deck.size, 48);
     expect(g.ph.size, 2);
@@ -80,7 +70,7 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g = g.hitPlayer();
+    g.hit();
 
     expect(g.deck.size, 47);
     expect(g.ph.size, 3);
@@ -90,7 +80,7 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g = g.hitPlayer();
+    g.hit();
     expect(g.deck.size, 46);
     expect(g.ph.size, 4);
     expect(g.dh.size, 2);
@@ -99,7 +89,7 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g = g.playerStay();
+    g.stay();
 
     expect(g.deck.size, 44);
     expect(g.ph.size, 4);
@@ -109,7 +99,7 @@ void main() {
     expect(g.isGameOver, true);
     expect(g.msg, "Dealer Wins!");
 
-    g = g.deal();
+    g.deal();
     expect(g.deck.size, 40);
     expect(g.ph.size, 2);
     expect(g.dh.size, 2);
@@ -118,26 +108,26 @@ void main() {
     expect(g.isGameOver, false);
     expect(g.msg, "Press Hit or Stay");
 
-    g = g.hitPlayer();
+    g.hit();
     expect(g.ph.points, 29);
     expect(g.isGameOver, true);
     expect(g.msg, "Dealer Wins!");
 
-    g = g.deal();
-    g = g.deal();
-    g = g.hitPlayer();
-    g = g.playerStay();
+    g.deal();
+    g.deal();
+    g.hit();
+    g.stay();
 
     expect(g.isGameOver, true);
     expect(g.msg, "Player Wins!");
 
     for (int i = 0; i < 100; i++) {
-      g = g.deal();
+      g.deal();
       while (g.ph.points < 19) {
-        g = g.hitPlayer();
+        g.hit();
       }
       if (!g.isGameOver) {
-        g = g.playerStay();
+        g.stay();
       }
       expect(g.ph.points > 0, true);
       expect(g.dh.points > 0, true);

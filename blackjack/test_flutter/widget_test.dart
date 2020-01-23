@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/bj_app.dart';
+import '../lib/app_common.dart';
+import '../lib/main.dart';
 
 void main() {
-  testHomePage();
-  testGamePage("UI 1");
-  testGamePage("UI 2");
+  testApp();
+  testBjPage(Page.ui1, "UI 1");
+  testBjPage(Page.ui2, "UI 2");
 }
 
-void testHomePage() {
-  testWidgets('Home Page', (WidgetTester tester) async {
-    await tester.pumpWidget(BjApp(shuffle: false));
+void testApp() {
+  testWidgets('App', (WidgetTester tester) async {
+    await tester.pumpWidget(App());
+
     expect(find.widgetWithText(AppBar, 'Blackjack - Home'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
     expect(buttonWithText('BLACKJACK - UI 1'), findsOneWidget);
@@ -20,18 +22,27 @@ void testHomePage() {
   });
 }
 
-void testGamePage(String suffix) {
-  testWidgets('$suffix', (WidgetTester tester) async {
-    await tester.pumpWidget(BjApp(
-      shuffle: false,
-    ));
+void testBjPage(Page page, String suffix) {
+  testWidgets('${page.name}', (WidgetTester tester) async {
+    await tester.pumpWidget(App(shuffle: false));
 
-    await tester.tap(find.text('BLACKJACK - $suffix'));
+//    Blackjack - UI 1
+    String buttonText = 'BLACKJACK - $suffix';
+    await tester.tap(find.text(buttonText));
+
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(AppBar, "Blackjack - $suffix"), findsOneWidget);
+//    await tester.pumpAndSettle();
+
+    final appBarText = "Blackjack - $suffix";
+    expect(find.widgetWithText(AppBar, appBarText), findsOneWidget);
+
     expect(buttonWithText('HIT'), findsOneWidget);
+
+
     expect(buttonWithText('STAY'), findsOneWidget);
+
     expect(buttonWithText('DEAL'), findsOneWidget);
+//    if (true) return;
 
     expect(find.text('4 Points'), findsOneWidget);
     expect(find.text('6 Points'), findsOneWidget);
@@ -51,7 +62,6 @@ void testGamePage(String suffix) {
   });
 }
 
-/// @return true if w is a Button with child of type Text containing text (or any text if text is null)
 bool isButton(Widget w, String text) {
   bool isButton = w is MaterialButton || w is CupertinoButton;
   if (!isButton) return false;

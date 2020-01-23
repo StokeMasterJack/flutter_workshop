@@ -30,8 +30,12 @@ class AppState extends State<App> {
   void initState() {
     super.initState();
     db = Db();
-    db.addListener(onDbChanged);
-    db.importFromJsonAssetAsync();
+//    db.addListener(onDbChanged);
+
+  }
+
+  void mkNetworkCall() async {
+    final bool result = await db.importFromJsonAssetAsync();
   }
 
   @override
@@ -42,6 +46,10 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
     print(context.runtimeType);
     return MaterialApp(
       home: _buildContactsPage(),
@@ -99,13 +107,9 @@ class AppState extends State<App> {
   }
 
   Future navToDbAdminPage(ScaffoldKey k) async {
-    print("navToDbAdminPage 1");
     DbMaintenancePage p = DbMaintenancePage(db);
-    print("navToDbAdminPage 2");
     final ctx = k.currentContext;
-    print("navToDbAdminPage 3");
     await navPush(ctx, (_) => p);
-    print("navToDbAdminPage 4");
   }
 
   Drawer mkMyDrawer(ScaffoldKey k) {

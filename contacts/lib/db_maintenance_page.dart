@@ -146,7 +146,7 @@ class DbMaintenanceState extends SsState<DbMaintenancePage> {
       await db.importFromExtDir();
       _snack("Import successful");
     } catch (e) {
-      _snack("Import failed: ${e}");
+      _snack("Import failed: $e");
     }
   }
 

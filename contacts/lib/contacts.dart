@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:contacts/Vm.dart';
 import 'package:contacts/perms.dart';
 import 'package:contacts/random_contacts.dart';
 import 'package:flutter/foundation.dart';
@@ -58,6 +57,15 @@ class Contacts extends UnmodifiableListView<Contact> {
     return contacts;
   }
 
+  static List<Contact> fromJsonSync2(List<Map<String, dynamic>> jsonData) {
+    List<Contact> contacts = [];
+    for (Map<String, dynamic> jsonMap in jsonData) {
+      Contact contact = Contact.fromJson(jsonMap);
+      contacts.add(contact);
+    }
+    return contacts;
+  }
+
   void sortByName() {
     Comparator<Contact> comparator = (Contact a, Contact b) => a.fullName.compareTo(b.fullName);
     this.sort(comparator);
@@ -65,7 +73,13 @@ class Contacts extends UnmodifiableListView<Contact> {
 
   static List<Contact> fromJsonTextSync(String jsonText) {
     try {
+      //turns string oof json in to an un-type-safe List of Maps
+
+      //List<Map<String, dynamic>>
       dynamic jsonData = json.decode(jsonText);
+
+      //turns an un-type-safe List of Maps into
+      //a statically-typed List<Contact>
       return fromJsonSync(jsonData);
     } catch (e, st) {
       debugPrint("Error parsing json");
@@ -78,6 +92,10 @@ class Contacts extends UnmodifiableListView<Contact> {
   static Future<List<Contact>> fromJsonTextAsync(String jsonText) async {
     return compute(fromJsonTextSync, jsonText);
   }
+
+//  static Future<List<Contact>> fromJsonTextAsync(String jsonText) async {
+//    return fromJsonTextSync(jsonText);
+//  }
 
   static List<Map<String, dynamic>> toJsonSync(Map<Id, Contact> map) {
     List<Map<String, dynamic>> a = <Map<String, dynamic>>[];
@@ -596,6 +614,9 @@ class Db extends ChangeNotifier {
 
   Future<bool> importFromJsonAssetAsync() async {
     String jsonText = await loadJsonAssetAsync();
+
+//    List<Contact> contacts = Contacts.fromJsonTextSync(jsonText);
+
     List<Contact> contacts = await Contacts.fromJsonTextAsync(jsonText);
     _addAll(contacts);
     notifyListeners();
@@ -660,8 +681,10 @@ class Db extends ChangeNotifier {
   }
 
   static Future<String> loadJsonAssetAsync() async {
-    AssetBundle assetBundle = Vm.assetBundle();
-    return assetBundle.loadString(defaultLocalAssetName);
+//    AssetBundle assetBundle = Vm.assetBundle();
+//    AssetBundle assetBundle = Vm.assetBundle();
+//  final AssetBundle assetBundle = rootBundle;
+    return rootBundle.loadString("data/contacts.json");
   }
 
   Future<Directory> docDir() async {

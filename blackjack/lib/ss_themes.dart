@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 extension ThemeDataExt on ThemeData {
+
   TextStyle get handNameMsg {
     TextTheme textTheme = this.textTheme;
     final TextStyle subtitleTheme = textTheme.subtitle;
@@ -19,29 +20,9 @@ extension ThemeDataExt on ThemeData {
     return titleTheme.copyWith(fontStyle: FontStyle.italic, color: color);
   }
 
-  static ThemeData mkTheme() {
+  static ThemeData mk() {
     return ThemeData(primarySwatch: Colors.blueGrey, fontFamily: 'GoogleSans');
   }
 
-  static ThemeData mkThemeForPlatform(TargetPlatform platform) {
-    return mkTheme().copyWith(platform: platform);
-  }
+  static ThemeData mkThemeForPlatform(TargetPlatform platform) => mk().copyWith(platform: platform);
 }
-
-//class ThemeDataPlus {
-//  final ThemeData themeData;
-//
-//  ThemeDataPlus(this.themeData);
-//
-//
-//
-//
-//  static ThemeDataPlus of(BuildContext context) {
-//    ThemeData themeData = Theme.of(context);
-//    return buildThemeDataPlus(themeData);
-//  }
-//
-//  static ThemeDataPlus buildThemeDataPlus(ThemeData themeData) {
-//    return ThemeDataPlus(themeData);
-//  }
-//}

@@ -115,7 +115,7 @@ class ContactsPageState extends SsState<ContactsPage> with SingleTickerProviderS
                   await Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) {
                     return DbMaintenancePage(db);
                   }));
-                  bool popped = Navigator.pop(scaffoldKey.currentContext);
+                  Navigator.pop(scaffoldKey.currentContext);
                 },
               )
             ])),

@@ -7,11 +7,8 @@ Future<Map<PermissionGroup, PermissionStatus>> requestPerm(List<PermissionGroup>
 }
 
 Future<PermissionStatus> requestExtStoragePerm() async {
-  print("requesting external storage permissions");
   final Map<PermissionGroup, PermissionStatus> map = await requestPerm([PermissionGroup.storage]);
-  print("result: ${map}");
   assert(map.length == 1);
   final PermissionStatus perm = map[PermissionGroup.storage];
-  print("perm: $perm");
   return perm;
 }

@@ -21,12 +21,12 @@ void main() {
     expect(c2.name, "K of Diamonds");
     expect(c2.points, 10);
 
-//    expect(() =>  Card(value: 1, suit: 5), throwsA(TypeMatcher<AssertionError>()));
-//    expect(() =>  Card(value: 14, suit: 1), throwsA(TypeMatcher<AssertionError>()));
+    expect(() => Card(value: 1, suit: 5), throwsA(TypeMatcher<AssertionError>()));
+    expect(() => Card(value: 14, suit: 1), throwsA(TypeMatcher<AssertionError>()));
   });
 
-  test('G test', () {
-    final g = Game();
+  test('Game test', () {
+    final g = Game(shuffle: false);
     g.dump();
     print("");
     g.hit();

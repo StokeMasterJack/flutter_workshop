@@ -1,4 +1,4 @@
-package com.smartsoft.app1
+package com.ss.app1
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
