@@ -28,13 +28,6 @@ class AppState extends State<App> {
   }
 
   void appDispatch(Page page) {
-//    NavigatorState navigatorState = Navigator.of(context);
-//    navigatorState.pushNamed("p1");
-
-
-//    Navigator.push(context, route);
-//    Navigator.push(context, route)
-
     setState(() {
       this.page = page;
     });
@@ -42,16 +35,9 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-//    var pf = defaultTargetPlatform;
-//    ThemeDataPlu
-  //from page 1:Navigator.pushNamed(context, "p2");
-
-  Navigator.pop(context);
-
     return MaterialApp(
         title: "App",
         theme: ThemeDataExt.mk(),
-
         home: AppCtx(
             page: page,
             dispatch: appDispatch,

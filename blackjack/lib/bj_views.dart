@@ -13,10 +13,7 @@ import 'ss_util.dart' show ListPos, ListExtras;
 class GameVu extends StatelessWidget {
   final IGame g;
 
-  GameVu({Key key, @required this.g})
-      : assert(g != null),
-        super(key: key){
-  }
+  GameVu({Key key, @required this.g}): assert(g != null), super(key: key);
 
 
 
@@ -195,14 +192,6 @@ class CardVu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
-      ThemeData t = Theme.of(context);
-
-//    AppCtx appCtx = context.dependOnInheritedWidgetOfExactType<AppCtx>();
-      AppCtx appCtx = AppCtx.of(context);
-
-
     final BjCtx bjCtx = BjCtx.of(context);
     final Page ui = bjCtx.ui;
     return ui == Page.ui1 ? _build1(context) : _build2(context);
