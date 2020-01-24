@@ -72,14 +72,7 @@ class BjButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final onPressed = () => dispatch(action);
 
-    return Padding(
-        padding: EdgeInsets.all(10),
-        child: RaisedButton(
-            child:
-            Text(text.toUpperCase()),
-            onPressed: isDisabled ? null : onPressed
-        )
-    );
+    return Padding(padding: EdgeInsets.all(10), child: RaisedButton(child: Text(text.toUpperCase()), onPressed: isDisabled ? null : onPressed));
   }
 }
 
@@ -125,17 +118,37 @@ class GameVu extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.blue),
         home: Scaffold(
+          drawer: MyDrawer(),
           appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.home),
-              tooltip: "Go to Home screen",
-              onPressed: () {
-                print("home pressed");
-              },
-            ),
+//            leading: IconButton(
+//              icon: Icon(Icons.home),
+//              tooltip: "Go to Home screen",
+//              onPressed: () {
+//                print("home pressed");
+//              },
+//            ),
             title: const Text("Blackjack"),
           ),
           body: Column(children: [ButtonsVu(dispatch, g.isGameOver), HandsVu(g), GameMsgVu(g.msg)]),
         ));
+  }
+}
+
+class MyDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          children: <Widget>[
+            ListTile(onTap: () => Navigator.pop(context), leading: Icon(Icons.contacts), title: Text("John")),
+            ListTile(onTap: () => Navigator.pop(context), leading: Icon(Icons.contacts), title: Text("Paul")),
+            ListTile(onTap: () => Navigator.pop(context), leading: Icon(Icons.contacts), title: Text("George")),
+            ListTile(onTap: () => Navigator.pop(context), leading: Icon(Icons.contacts), title: Text("Ringo")),
+          ],
+        ),
+      ),
+    );
   }
 }

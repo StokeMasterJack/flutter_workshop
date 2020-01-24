@@ -32,12 +32,14 @@ class HomePageVu extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 10, top: 60),
                   child: RaisedButton(
                     child: Text(Page.ui1.title.toUpperCase()),
-                    onPressed: () => appCtx.dispatch(Page.ui1),
+//                    onPressed: () => appCtx.dispatch(Page.ui1),
+                    onPressed: () => Navigator.pushNamed(context, Page.ui1.name),
                   ),
                 ),
                 RaisedButton(
                   child: Text(Page.ui2.title.toUpperCase()),
-                  onPressed: () => appCtx.dispatch(Page.ui2),
+//                  onPressed: () => appCtx.dispatch(Page.ui2),
+                  onPressed: () => Navigator.pushNamed(context, Page.ui2.name),
                 )
               ],
             )));

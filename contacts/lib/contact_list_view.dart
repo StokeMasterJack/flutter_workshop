@@ -26,6 +26,9 @@ class ContactListView extends SsStatelessWidget {
     }
 
     return new ListView.builder(itemCount: contacts.length, itemBuilder: buildContactTile);
+//    return  ListView(
+//      children: <Widget>[],
+//    )
   }
 
   Widget buildContactTile(BuildContext context, int index) {

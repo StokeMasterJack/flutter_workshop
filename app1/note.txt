@@ -1,0 +1,18 @@
+bj.dart
+    as much as possible
+    testable with just dart 'test'
+
+UI/Flutter
+    then - make "most" widgets Stateless
+    strategically: place my stateful widget
+
+
+Game
+GameController
+GameVu
+
+
+widget libraries
+dart packages
+plugins
+    package - flutter specific - platform stuff
