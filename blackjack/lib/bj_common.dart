@@ -1,23 +1,13 @@
 import 'package:flutter/cupertino.dart';
 
-import 'app_common.dart';
-
 typedef BjDispatch = void Function(BjAction action);
 
 enum BjAction { deal, hit, stay }
-//enum Page { ui1, ui2 }
-
-void test1() {
-//    UI.ui1;
-}
-
-//extension UIExt on UI{
-//  String  get title =>
-//}
+enum UI {ui1,ui2}
 
 class BjCtx extends InheritedWidget {
   final BjDispatch dispatch;
-  final Page ui;
+  final UI ui;
 
   BjCtx({this.dispatch, this.ui, Key key, Widget child})
       : assert(dispatch != null),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-extension ThemeDataExt on ThemeData {
+const MaterialColor _primarySwatch = Colors.blueGrey;
 
+extension ThemeDataExt on ThemeData {
   TextStyle get handNameMsg {
     TextTheme textTheme = this.textTheme;
-    final TextStyle subtitleTheme = textTheme.subtitle;
+    final TextStyle subtitleTheme = textTheme.subtitle2;
     final Color color = this.hintColor;
     return subtitleTheme.copyWith(fontWeight: FontWeight.bold, color: color, decorationStyle: TextDecorationStyle.wavy);
   }
@@ -15,13 +16,17 @@ extension ThemeDataExt on ThemeData {
 
   TextStyle get gameMsg {
     final TextTheme textTheme = this.textTheme;
-    final TextStyle titleTheme = textTheme.title;
+    final TextStyle titleTheme = textTheme.headline6;
     final Color color = titleTheme.color;
     return titleTheme.copyWith(fontStyle: FontStyle.italic, color: color);
   }
 
+  MaterialColor get primarySwatch => _primarySwatch;
+
+  Color get backgroundColorLite => primarySwatch[50];
+
   static ThemeData mk() {
-    return ThemeData(primarySwatch: Colors.blueGrey, fontFamily: 'GoogleSans');
+    return ThemeData(primarySwatch: _primarySwatch, fontFamily: 'GoogleSans');
   }
 
   static ThemeData mkThemeForPlatform(TargetPlatform platform) => mk().copyWith(platform: platform);

@@ -1,18 +1,16 @@
+import 'package:blackjack/app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/app_common.dart';
-import '../lib/main.dart';
-
 void main() {
   testApp();
-  testBjPage(Page.ui1, "UI 1");
-  testBjPage(Page.ui2, "UI 2");
+  testBjPage(Rt.ui1, "UI 1");
+  testBjPage(Rt.ui2, "UI 2");
 }
 
 void testApp() {
-  testWidgets('App', (WidgetTester tester) async {
+  testWidgets('AppNav', (WidgetTester tester) async {
     await tester.pumpWidget(App());
 
     expect(find.widgetWithText(AppBar, 'Blackjack - Home'), findsOneWidget);
@@ -22,7 +20,7 @@ void testApp() {
   });
 }
 
-void testBjPage(Page page, String suffix) {
+void testBjPage(Rt page, String suffix) {
   testWidgets('${page.name}', (WidgetTester tester) async {
     await tester.pumpWidget(App(shuffle: false));
 
@@ -37,7 +35,6 @@ void testBjPage(Page page, String suffix) {
     expect(find.widgetWithText(AppBar, appBarText), findsOneWidget);
 
     expect(buttonWithText('HIT'), findsOneWidget);
-
 
     expect(buttonWithText('STAY'), findsOneWidget);
 

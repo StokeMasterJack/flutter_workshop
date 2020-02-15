@@ -1,28 +1,4 @@
-//int hashCodeList<T>(Iterable<T> a) {
-//  int hash = 1;
-//  Iterator<T> i = a.iterator;
-//  while (true) {
-//    bool dd = i.moveNext();
-//    if (!dd) break;
-//    T el = i.current;
-//    hash = 31 * hash + (el == null ? 0 : el.hashCode);
-//  }
-//  return hash;
-//}
 
-//class List2<E> extends UnmodifiableListView<E> {
-//  final int hash;
-//
-//  List2(Iterable<E> source, [int hash])
-//      : this.hash = hash ?? hashCodeList(source),
-//        super(source);
-//
-//  @override
-//  bool operator ==(Object other) => identical(this, other) || other is List2 && runtimeType == other.runtimeType && hash == other.hash;
-//
-//  @override
-//  int get hashCode => hash;
-//}
 
 String indent(int d) {
   final sb = StringBuffer();
@@ -71,9 +47,9 @@ extension ListExtras<T> on List<T> {
 
 enum ListPos { first, middle, last }
 
-T ensure<T>(T v) {
+T ensure<T>(T v, [String m = "Ensure failed"]) {
   if (v == null) {
-    throw ArgumentError("ensure failed");
+    throw ArgumentError(m);
   }
   return v;
 }

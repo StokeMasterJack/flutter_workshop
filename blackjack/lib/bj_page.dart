@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart' hide Card, Action;
 
-import 'app_common.dart';
 import 'bj.dart';
 import 'bj_common.dart';
 import 'bj_views.dart';
 
 class BjPage extends StatefulWidget {
   final bool shuffle;
+  final UI ui;
 
-  BjPage({this.shuffle = true});
+  BjPage({this.shuffle = true, this.ui = UI.ui1});
 
   @override
   State createState() => BjPageState();
@@ -32,28 +32,29 @@ class BjPageState extends State<BjPage> {
 
   @override
   Widget build(BuildContext context) {
-    AppCtx appCtx = AppCtx.of(context);
-    return BjCtx(dispatch: dispatch, ui: appCtx.page, child: BjPageVu(game: g));
+    return BjCtx(dispatch: dispatch, ui: widget.ui, child: BjPageVu(game: g, ui: widget.ui));
   }
-
-
 }
 
 class BjPageVu extends StatelessWidget {
   final IGame game;
+  final UI ui;
 
-  BjPageVu({Key key, @required this.game})
+  BjPageVu({Key key, @required this.game, @required this.ui})
       : assert(game != null),
         super(key: key);
 
+  String get pageTitle {
+    String s = ui.toString();
+    String n = s[s.length - 1];
+    return "Blackjack - UI $n";
+  }
+
   @override
   Widget build(BuildContext context) {
-    final AppCtx appCtx = AppCtx.of(context);
-    final Page page = appCtx.page;
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.home), tooltip: 'Home', onPressed: () => appCtx.dispatch(Page.home)),
-          title: Text(page.title),
+          title: Text(pageTitle),
         ),
         body: SafeArea(
 //            minimum: EdgeInsets.fromLTRB(0.0, 20.0, 20.0, 0.0),

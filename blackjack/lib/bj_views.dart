@@ -1,43 +1,31 @@
 import 'package:flutter/material.dart' hide Card;
 
-import 'app_common.dart';
 import 'bj.dart';
 import 'bj_common.dart';
 import 'ss_themes.dart';
 import 'ss_util.dart';
 import 'ss_util.dart' show ListPos, ListExtras;
 
-
-
-
 class GameVu extends StatelessWidget {
   final IGame g;
 
-  GameVu({Key key, @required this.g}): assert(g != null), super(key: key);
-
-
+  GameVu({Key key, @required this.g})
+      : assert(g != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final BjCtx bjCtx = BjCtx.of(context);
-    final Page ui = bjCtx.ui;
-    final double hp = ui == Page.ui1 ? 0.0 : 5.0;
-    final ret = Padding(
+    final UI ui = bjCtx.ui;
+    final double hp = ui == UI.ui1 ? 0.0 : 5.0;
+
+    return Container(
       padding: EdgeInsets.only(top: 20, bottom: 20, left: hp, right: hp),
+      constraints: BoxConstraints(maxWidth: 500),
       child: Column(
-        children: <Widget>[
-
-          ButtonsVu(g),
-
-          HandsVu(ph: g.ph, dh: g.dh),
-
-          GameMsgVu(g)],
+        children: <Widget>[ButtonsVu(g), HandsVu(ph: g.ph, dh: g.dh), GameMsgVu(g)],
       ),
     );
-
-
-    return ret;
-
   }
 }
 
@@ -49,12 +37,12 @@ class ButtonsVu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BjCtx bjCtx = ensure(BjCtx.of(context));
-    final Page ui = ensure(bjCtx.ui);
+    final UI ui = ensure(bjCtx.ui);
     final BjDispatch dispatch = ensure(bjCtx.dispatch);
     return Padding(
       padding: const EdgeInsets.only(left: 6.0),
       child: ButtonBar(
-        alignment: ui == Page.ui1 ? MainAxisAlignment.center : MainAxisAlignment.start,
+        alignment: ui == UI.ui1 ? MainAxisAlignment.center : MainAxisAlignment.start,
         children: <Widget>[
           RaisedButton(
             child: Text("DEAL"),
@@ -73,6 +61,7 @@ class ButtonsVu extends StatelessWidget {
     );
   }
 }
+
 class HandsVu extends StatelessWidget {
   final IHand ph;
   final IHand dh;
@@ -82,7 +71,7 @@ class HandsVu extends StatelessWidget {
         assert(dh != null);
 
   Widget build1(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.only(top: 20, bottom: 10, left: 0, right: 0),
       child: IntrinsicHeight(
         child: Row(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -95,7 +84,6 @@ class HandsVu extends StatelessWidget {
 
   Widget build2(BuildContext context) {
     return Container(
-//      padding: EdgeInsets.only(top: 10, bottom: 10, left: 0, right: 0),
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 0, right: 0),
       constraints: BoxConstraints.tightForFinite(),
       child: Column(children: [
@@ -109,10 +97,11 @@ class HandsVu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BjCtx bjCtx = BjCtx.of(context);
-    final Page ui = bjCtx.ui;
-    return ui == Page.ui1 ? build1(context) : build2(context);
+    final UI ui = bjCtx.ui;
+    return ui == UI.ui1 ? build1(context) : build2(context);
   }
 }
+
 class GameMsgVu extends StatelessWidget {
   final IGame g;
 
@@ -121,13 +110,14 @@ class GameMsgVu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BjCtx bjCtx = BjCtx.of(context);
-    final Page ui = bjCtx.ui;
+    final UI ui = bjCtx.ui;
     final ThemeData themeData = Theme.of(context);
-    final double leftPad = ui == Page.ui1 ? 0 : 14;
-    final AlignmentGeometry alignment = ui == Page.ui1 ? Alignment.center : Alignment.centerLeft;
+    final double leftPad = ui == UI.ui1 ? 0 : 14;
+    final AlignmentGeometry alignment = ui == UI.ui1 ? Alignment.center : Alignment.centerLeft;
     return Padding(padding: EdgeInsets.only(top: 30, left: leftPad), child: Align(alignment: alignment, child: Text(g.msg, style: themeData.gameMsg)));
   }
 }
+
 class CardsVu extends StatelessWidget {
   final List<Card> cards;
 
@@ -145,7 +135,10 @@ class CardsVu extends StatelessWidget {
     final Iterable<MapEntry<int, Card>> entries = map.entries;
     final List<Widget> cardVuWidgets = entries.map(_mkCardVu).toList();
     assert(cardVuWidgets != null);
-    return Container(constraints: BoxConstraints.expand(height: 180.0), child: ListView(children: cardVuWidgets));
+    return Container(
+      constraints: BoxConstraints.expand(height: 180.0),
+      child: ListView(children: cardVuWidgets),
+    );
   }
 
   Widget _build2(BuildContext context) {
@@ -164,8 +157,8 @@ class CardsVu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BjCtx bjCtx = BjCtx.of(context);
-    final Page ui = bjCtx.ui;
-    return ui == Page.ui1 ? _build1(context) : _build2(context);
+    final UI ui = bjCtx.ui;
+    return ui == UI.ui1 ? _build1(context) : _build2(context);
   }
 }
 
@@ -179,7 +172,7 @@ class CardVu extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 //    var textTheme = theme.textTheme;
 //    final TextStyle titleStyle = textTheme.title;
-    return Text(card.name, style: theme.textTheme.body1, softWrap: false);
+    return Text(card.name, style: theme.textTheme.bodyText1, softWrap: false);
   }
 
   Widget _build2(BuildContext context) {
@@ -193,10 +186,11 @@ class CardVu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BjCtx bjCtx = BjCtx.of(context);
-    final Page ui = bjCtx.ui;
-    return ui == Page.ui1 ? _build1(context) : _build2(context);
+    final UI ui = bjCtx.ui;
+    return ui == UI.ui1 ? _build1(context) : _build2(context);
   }
 }
+
 class HandVu extends StatelessWidget {
   final IHand hand;
 
@@ -211,19 +205,19 @@ class HandVu extends StatelessWidget {
     return IntrinsicHeight(
         child: Container(
 //          color: themeData.dividerColor.withOpacity(.05),
-          color: Theme.of(context).backgroundColor,
-          padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
-          margin: EdgeInsets.only(top: 5, bottom: 5, left: isLeft ? 14 : 7, right: isRight ? 14 : 7),
+      color: themeData.backgroundColorLite,
+      padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
+      margin: EdgeInsets.only(top: 5, bottom: 5, left: isLeft ? 14 : 7, right: isRight ? 14 : 7),
 
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(hand.name, style: themeData.handNameMsg, softWrap: false),
-              CardsVu(cards: hand.cards),
-              Text(hand.msg, style: themeData.handPointsMsg, softWrap: false)
-            ],
-          ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(hand.name, style: themeData.handNameMsg, softWrap: false),
+          CardsVu(cards: hand.cards),
+          Text(hand.msg, style: themeData.handPointsMsg, softWrap: false)
+        ],
+      ),
     ));
   }
 
@@ -248,6 +242,6 @@ class HandVu extends StatelessWidget {
   Widget build(BuildContext context) {
     final BjCtx bjCtx = ensure(BjCtx.of(context));
     final ui = ensure(bjCtx.ui);
-    return ui == Page.ui1 ? build1(context) : build2(context);
+    return ui == UI.ui1 ? build1(context) : build2(context);
   }
 }

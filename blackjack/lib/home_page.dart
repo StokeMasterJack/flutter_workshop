@@ -1,21 +1,23 @@
-import 'package:flutter/foundation.dart';
+import 'package:blackjack/ss_util_flutter.dart';
 import 'package:flutter/material.dart' hide Card;
 
-import 'app_common.dart';
-import 'ss_util.dart';
+class HomeDispatch {
+  NavPush pushUI1;
+  NavPush pushUI2;
+
+  HomeDispatch(this.pushUI1, this.pushUI2);
+}
 
 class HomePageVu extends StatelessWidget {
-  HomePageVu({Key key}) : super(key: key);
+  final HomeDispatch dispatch;
+
+  HomePageVu(this.dispatch);
 
   @override
   Widget build(BuildContext context) {
-    AppCtx appCtx = ensure(AppCtx.of(context));
-    Page page = appCtx.page;
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.home), tooltip: 'Home'
-              ' Cisco', onPressed: () => appCtx.dispatch(Page.home)),
-          title: Text(page.title),
+          title: Text("Blackjack - Home"),
         ),
         body: SafeArea(
             minimum: EdgeInsets.all(20.0),
@@ -32,13 +34,13 @@ class HomePageVu extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10, top: 60),
                   child: RaisedButton(
-                    child: Text(Page.ui1.title.toUpperCase()),
-                    onPressed: () => appCtx.dispatch(Page.ui1),
+                    child: Text("Blackjack - UI 1"),
+                    onPressed: () => dispatch.pushUI1(context),
                   ),
                 ),
                 RaisedButton(
-                  child: Text(Page.ui2.title.toUpperCase()),
-                  onPressed: () => appCtx.dispatch(Page.ui2),
+                  child: Text("Blackjack - UI 2"),
+                  onPressed: () => dispatch.pushUI2(context),
                 )
               ],
             )));
